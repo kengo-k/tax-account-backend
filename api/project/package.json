@@ -1,0 +1,35 @@
+{
+  "name": "sources",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "check": "./node_modules/.bin/tsc --noEmit",
+    "exec": "./node_modules/.bin/ts-node -r tsconfig-paths/register"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.6",
+    "inversify": "^5.0.5",
+    "js-yaml": "^4.0.0",
+    "pg": "^8.5.1",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "@types/ejs": "^3.0.6",
+    "@types/inversify": "^2.0.33",
+    "@types/js-yaml": "^4.0.0",
+    "@types/node": "^14.14.31",
+    "@types/pg": "^7.14.10",
+    "ts-node": "^9.1.1",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^4.2.2"
+  },
+  "moduleNameMapper": {
+    "@core/(.+)$": "<rootDir>/src/main/core/$1",
+    "@controllers/(.+)$": "<rootDir>/src/main/controllers/$1",
+    "@services/(.+)$": "<rootDir>/src/main/services/$1"
+  }
+}

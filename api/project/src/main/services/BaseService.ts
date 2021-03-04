@@ -1,6 +1,8 @@
 import { injectable } from "inversify";
+import { ConnectionProvider } from "@core/connection/ConnectionProvider";
 
 @injectable()
-export class BaseService {
+export abstract class BaseService {
+  abstract connectionProvider: ConnectionProvider;
   constructor() {}
 }

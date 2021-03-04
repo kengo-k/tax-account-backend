@@ -29,6 +29,7 @@
   },
   "moduleNameMapper": {
     "@core/(.+)$": "<rootDir>/src/main/core/$1",
+    "@model/(.+)$": "<rootDir>/src/main/common/model/$1",
     "@controllers/(.+)$": "<rootDir>/src/main/controllers/$1",
     "@services/(.+)$": "<rootDir>/src/main/services/$1"
   }

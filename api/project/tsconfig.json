@@ -11,6 +11,7 @@
     "sourceMap": true,
     "paths": {
       "@core/*": ["src/main/core/*"],
+      "@model/*": ["src/main/common/model/*"],
       "@controllers/*": ["src/main/controllers/*"],
       "@services/*": ["src/main/services/*"]
     }

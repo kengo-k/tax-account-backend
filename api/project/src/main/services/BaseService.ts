@@ -67,7 +67,14 @@ export abstract class BaseService {
     return res;
   }
 
-  public async create<RES>(entity: any) {
+  // TODO undefinedな値をどうするか、とかそのあたりをオプションで柔軟に扱えるようにする
+  public async create(option: {
+    entity: any;
+    treatNull: TreatNull;
+    ignoreRows: string[];
+    nullRows: string[];
+  }) {
+    const entity = option.entity;
     if (entity?.constructor?.name == null) {
       // TODO
       throw new Error();
@@ -81,11 +88,26 @@ export abstract class BaseService {
 
     const params: any = {};
     const rowNames = Object.keys(entity);
+    console.log(rowNames);
     for (const rowName of rowNames) {
       if (["id", "created_at", "updated_at"].includes(rowName)) {
         continue;
       }
-      params[rowName] = entity[rowName];
+      let value = entity[rowName];
+      if (value == null) {
+        if (option.ignoreRows.includes(rowName)) {
+          continue;
+        }
+        if (option.nullRows.includes(rowName)) {
+          value = NULL;
+        }
+        if (option.treatNull === TreatNull.DefaultIgnore) {
+          continue;
+        } else {
+          value = NULL;
+        }
+      }
+      params[rowName] = value;
     }
     const currentDate = moment().format("YYYY-MM-DD HH:mm:ss");
     params["created_at"] = currentDate;
@@ -97,14 +119,24 @@ ${tableName}(${keys.join(",")})
 values(${keys.map(getParam)})
 `;
     const connection = this.getConnection();
+    console.log(sqlString);
     connection.query(sqlString);
   }
+}
+
+const NULL = {};
+
+export enum TreatNull {
+  DefaultIgnore,
+  DefaultNull,
 }
 
 const getParamFromParams = (params: any) => (key: string) => {
   // TODO SQLインジェクション対策
   let param = params[key];
-  if (typeof param === "string") {
+  if (param === NULL) {
+    param = "null";
+  } else if (typeof param === "string") {
     param = `'${param}'`;
   }
   return param;

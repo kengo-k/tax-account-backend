@@ -3,6 +3,7 @@ import { getContainer } from "@core/container/getContainer";
 import { NendoService } from "@services/nendo/NendoService";
 import { ConnectionProvider } from "@core/connection/ConnectionProvider";
 import { JournalEntity } from "@model/journal/JournalEntity";
+import { TreatNull } from "@services/BaseService";
 
 const container = getContainer();
 
@@ -26,5 +27,11 @@ const entity = new JournalEntity({
   kasikata_cd: "BBBBB",
   kasikata_value: 100,
   nendo: "2020",
+  note: undefined,
 });
-nendoService.create(entity);
+nendoService.create({
+  entity,
+  treatNull: TreatNull.DefaultIgnore,
+  ignoreRows: [],
+  nullRows: [],
+});

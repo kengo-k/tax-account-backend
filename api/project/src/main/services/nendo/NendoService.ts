@@ -11,10 +11,10 @@ export class NendoService extends BaseService {
   }
 
   public selectNendoList() {
-    const setTemplate = this.selectByTemplate(JournalSearchResponse);
-    const execute = setTemplate("service/nendo/selectNendoList.sql");
-    const nendoList = execute({});
-
+    const nendoList = this.select({
+      responseType: JournalSearchResponse,
+      sqlTemplate: "service/nendo/selectNendoList.sql",
+    });
     return nendoList;
   }
 }

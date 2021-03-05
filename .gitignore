@@ -1,4 +1,5 @@
 data
+!api/migration/data
 db.env
 api/database.yml
 api/project/node_modules

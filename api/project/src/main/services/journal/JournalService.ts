@@ -1,11 +1,12 @@
 import { inject } from "inversify";
 import { TYPES } from "@core/container/types";
 import { BaseService } from "@services/BaseService";
-import { JournalSearchResponse } from "@model/journal/JournalSearchResponse";
+import { ConnectionProvider } from "@core/connection/ConnectionProvider";
 
 export class JournalService extends BaseService {
   public constructor(
-    @inject(TYPES.ConnectionProvider) public connectionProvider
+    @inject(TYPES.ConnectionProvider)
+    public connectionProvider: ConnectionProvider
   ) {
     super();
   }

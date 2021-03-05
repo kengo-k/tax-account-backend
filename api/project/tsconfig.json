@@ -14,7 +14,8 @@
       "@model/*": ["src/main/common/model/*"],
       "@controllers/*": ["src/main/controllers/*"],
       "@services/*": ["src/main/services/*"]
-    }
+    },
+    "strict": true
   },
   "exclude": ["node_modules"]
 }

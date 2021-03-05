@@ -31,7 +31,7 @@ export abstract class BaseService {
     sqlTemplate?: string | undefined;
     sqlTemplateParams?: any | undefined;
     sqlParam?: any | undefined;
-    resultHandler?: (row: any) => RES | undefined;
+    resultHandler?: ((row: any) => RES) | undefined;
   }): Promise<RES[]> {
     let sqlString = option.sql;
     if (option.sqlTemplate != null) {
@@ -64,5 +64,33 @@ export abstract class BaseService {
     }
 
     return res;
+  }
+
+  public async create<RES>(entity: any) {
+    const connection = this.getConnection();
+    if (entity?.constructor?.name == null) {
+      // TODO
+      throw new Error();
+    }
+    let names = entity.constructor.name.split("Entity");
+    if (names.length != 2) {
+      // TODO
+      throw new Error();
+    }
+    let tableName = `${names[0].toLowerCase()}s`;
+
+    const params = {};
+    const rowNames = Object.keys(entity);
+    console.log(rowNames);
+
+    // TODO SQLインジェクション対策
+    const sqlString = `
+      insert
+        into ${tableName}
+      values (
+
+      )
+    `;
+    console.log(sqlString);
   }
 }

@@ -2,6 +2,7 @@ import { TYPES } from "@core/container/types";
 import { getContainer } from "@core/container/getContainer";
 import { NendoService } from "@services/nendo/NendoService";
 import { ConnectionProvider } from "@core/connection/ConnectionProvider";
+import { JournalEntity } from "@model/journal/JournalEntity";
 
 const container = getContainer();
 
@@ -17,3 +18,14 @@ nendoList.then((value) => {
   console.log(value);
   connection.end();
 });
+
+const entity = new JournalEntity({
+  date: "20210305",
+  checked: "0",
+  karikata_cd: "AAAAA",
+  karikata_value: 100,
+  kasikata_cd: "BBBBB",
+  kasikata_value: 100,
+  nendo: "2020",
+});
+nendoService.create(entity);

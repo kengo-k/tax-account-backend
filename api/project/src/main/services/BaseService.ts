@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as ejs from "ejs";
+import * as moment from "moment";
 import { injectable } from "inversify";
 import { Client } from "pg";
 import { RootContext } from "@core/RootContext";
@@ -67,7 +68,6 @@ export abstract class BaseService {
   }
 
   public async create<RES>(entity: any) {
-    const connection = this.getConnection();
     if (entity?.constructor?.name == null) {
       // TODO
       throw new Error();
@@ -79,18 +79,33 @@ export abstract class BaseService {
     }
     let tableName = `${names[0].toLowerCase()}s`;
 
-    const params = {};
+    const params: any = {};
     const rowNames = Object.keys(entity);
-    console.log(rowNames);
-
-    // TODO SQLインジェクション対策
-    const sqlString = `
-      insert
-        into ${tableName}
-      values (
-
-      )
-    `;
-    console.log(sqlString);
+    for (const rowName of rowNames) {
+      if (["id", "created_at", "updated_at"].includes(rowName)) {
+        continue;
+      }
+      params[rowName] = entity[rowName];
+    }
+    const currentDate = moment().format("YYYY-MM-DD HH:mm:ss");
+    params["created_at"] = currentDate;
+    params["updated_at"] = currentDate;
+    const getParam = getParamFromParams(params);
+    const keys = Object.keys(params);
+    const sqlString = `insert into
+${tableName}(${keys.join(",")})
+values(${keys.map(getParam)})
+`;
+    const connection = this.getConnection();
+    connection.query(sqlString);
   }
 }
+
+const getParamFromParams = (params: any) => (key: string) => {
+  // TODO SQLインジェクション対策
+  let param = params[key];
+  if (typeof param === "string") {
+    param = `'${param}'`;
+  }
+  return param;
+};

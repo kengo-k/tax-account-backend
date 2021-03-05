@@ -16,7 +16,6 @@ const nendoService = container.get<NendoService>(TYPES.NendoService);
 const nendoList = nendoService.selectNendoList();
 nendoList.then((value) => {
   console.log(value);
-  connection.end();
 });
 
 const entity = new JournalEntity({

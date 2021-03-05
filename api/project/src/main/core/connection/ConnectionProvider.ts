@@ -18,7 +18,6 @@ export class ConnectionProvider {
 
   private createConnection(): Client {
     const dbConfigPath = `${RootContext.apiRootDir}/database.yml`;
-    console.log(dbConfigPath);
     const dbConfigValue = fs.readFileSync(dbConfigPath, "utf8");
     const dbConfig = yaml.load(dbConfigValue);
 

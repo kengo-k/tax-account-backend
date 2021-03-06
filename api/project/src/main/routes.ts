@@ -1,4 +1,4 @@
-import { JournalController } from "./src/main/controllers/journal/JournalController";
+import { JournalController } from "@controllers/journal/JournalController";
 
 export enum API_METHOD {
   GET,

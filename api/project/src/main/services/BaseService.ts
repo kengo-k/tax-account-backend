@@ -40,6 +40,7 @@ export abstract class BaseService {
       responseType,
       sql: `select * from ${tableName} where id = ${id}`,
     });
+    // TODO データ件数が1でない場合はエラー
     return result[0];
   }
 

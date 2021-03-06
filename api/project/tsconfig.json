@@ -10,6 +10,7 @@
     "experimentalDecorators": true,
     "sourceMap": true,
     "paths": {
+      "@test/*": ["src/test/*"],
       "@core/*": ["src/main/core/*"],
       "@model/*": ["src/main/common/model/*"],
       "@controllers/*": ["src/main/controllers/*"],

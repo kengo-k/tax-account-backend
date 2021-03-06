@@ -60,6 +60,7 @@
       "**/test/**/*.test.ts"
     ],
     "moduleNameMapper": {
+      "@test/(.+)$": "<rootDir>/src/test/$1",
       "@core/(.+)$": "<rootDir>/src/main/core/$1",
       "@model/(.+)$": "<rootDir>/src/main/common/model/$1",
       "@controllers/(.+)$": "<rootDir>/src/main/controllers/$1",

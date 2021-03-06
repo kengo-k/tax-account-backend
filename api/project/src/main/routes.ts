@@ -39,6 +39,7 @@ const { GET, POST, PUT, DELETE } = API_METHOD;
 // prettier-ignore
 function buildRoute() {
   const container = getContainer();
+  addRoute(GET, "/api/v1/journal/:id", container.get<JournalController>(TYPES.JournalController), (controller) => controller.selectById);
   addRoute(POST, "/api/v1/journal", container.get<JournalController>(TYPES.JournalController), (controller) => controller.create);
 }
 

@@ -25,6 +25,24 @@ export abstract class BaseService {
     };
   }
 
+  public async selectById<RES extends {}>(
+    responseType: new () => RES,
+    id: number
+  ) {
+    const entity = new responseType();
+    const names = entity.constructor.name.split("Entity");
+    if (names.length != 2) {
+      // TODO
+      throw new Error();
+    }
+    const tableName = `${names[0].toLowerCase()}s`;
+    const result = await this.select({
+      responseType,
+      sql: `select * from ${tableName} where id = ${id}`,
+    });
+    return result[0];
+  }
+
   public async select<RES>(option: {
     responseType: new () => RES;
     sql?: string | undefined;
@@ -84,7 +102,7 @@ export abstract class BaseService {
       // TODO
       throw new Error();
     }
-    let tableName = `${names[0].toLowerCase()}s`;
+    const tableName = `${names[0].toLowerCase()}s`;
 
     const params: any = {};
     const rowNames = Object.keys(entity);
@@ -120,7 +138,6 @@ values(${keys.map(getParam)})
 returning id
 `;
     const connection = this.getConnection();
-    console.log(sqlString);
     const result = await connection.query(sqlString);
     return {
       command: result.command,

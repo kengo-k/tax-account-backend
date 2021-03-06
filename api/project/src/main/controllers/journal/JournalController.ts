@@ -11,9 +11,22 @@ export class JournalController {
     public journalService: JournalService
   ) {}
 
+  public selectById(req: any, res: any) {
+    const id = req.params["id"];
+    const result = this.journalService.selectById(JournalEntity, id);
+    result
+      .then((result) => {
+        // TODO レスポンスの規格化
+        res.send(JSON.stringify(result));
+      })
+      .catch(() => {
+        // TODO エラー時のレスポンス
+        res.send(JSON.stringify({ result: 5 }));
+      });
+  }
+
   // TODO anyやめる
   public create(req: any, res: any) {
-    console.log(req.body);
     const result = this.journalService.create({
       entity: new JournalEntity(req.body),
       treatNull: TreatNull.DefaultIgnore,

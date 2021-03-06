@@ -120,7 +120,7 @@ values(${keys.map(getParam)})
 `;
     const connection = this.getConnection();
     console.log(sqlString);
-    connection.query(sqlString);
+    return connection.query(sqlString);
   }
 }
 

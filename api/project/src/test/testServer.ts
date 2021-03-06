@@ -1,8 +1,17 @@
 import { app } from "../main/app";
 import axios from "axios";
+import { getContainer } from "@core/container/getContainer";
+import { TYPES } from "@core/container/types";
+import { ConnectionProvider } from "@core/connection/ConnectionProvider";
 
 // TODO コンフィグ化する
 const port = 8080;
+
+const container = getContainer();
+const connectionProvider = container.get<ConnectionProvider>(
+  TYPES.ConnectionProvider
+);
+const connection = connectionProvider.getConnection();
 
 class TestServer {
   private server: any;
@@ -27,6 +36,7 @@ class TestServer {
   public start() {
     const promise = new Promise((resolve) => {
       this.server = app.listen(port, async () => {
+        connection.connect();
         resolve(1);
       });
     });
@@ -34,6 +44,7 @@ class TestServer {
   }
 
   public stop() {
+    connection.end();
     this.server.close();
   }
 }

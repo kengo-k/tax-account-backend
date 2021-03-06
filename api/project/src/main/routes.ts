@@ -1,3 +1,5 @@
+import { getContainer } from "@core/container/getContainer";
+import { TYPES } from "@core/container/types";
 import { JournalController } from "@controllers/journal/JournalController";
 
 export enum API_METHOD {
@@ -10,6 +12,7 @@ export enum API_METHOD {
 export interface Route<CONTROLLER> {
   method: API_METHOD;
   path: string;
+  controller: CONTROLLER;
   run: (req: any, res: any) => void;
 }
 
@@ -17,14 +20,15 @@ const routes: Route<any>[] = [];
 const addRoute = <CONTROLLER>(
   method: API_METHOD,
   path: string,
-  controllerClass: new () => CONTROLLER,
+  controller: CONTROLLER,
+  // TODO anyやめる
   createRun: (controller: CONTROLLER) => (req: any, res: any) => void
 ) => {
-  const controller = new controllerClass();
   const run = createRun(controller);
   const route: Route<CONTROLLER> = {
     method,
     path,
+    controller,
     run,
   };
   routes.push(route);
@@ -34,7 +38,8 @@ const { GET, POST, PUT, DELETE } = API_METHOD;
 
 // prettier-ignore
 function buildRoute() {
-  addRoute(POST, "/api/v1/journal", JournalController, (controller) => controller.create);
+  const container = getContainer();
+  addRoute(POST, "/api/v1/journal", container.get<JournalController>(TYPES.JournalController), (controller) => controller.create);
 }
 
 buildRoute();

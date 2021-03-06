@@ -5,8 +5,8 @@
   "main": "main.js",
   "scripts": {
     "test": "jest",
-    "check": "./node_modules/.bin/tsc --noEmit",
-    "exec": "./node_modules/.bin/ts-node -r tsconfig-paths/register"
+    "check": "tsc --noEmit",
+    "exec": "ts-node -r tsconfig-paths/register"
   },
   "author": "",
   "license": "ISC",

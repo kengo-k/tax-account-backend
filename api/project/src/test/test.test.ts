@@ -1,3 +1,6 @@
-test("test", () => {
-  expect(1).toEqual(1);
+import { testServer } from "@test/testServer";
+
+test("test", async () => {
+  await testServer.start();
+  testServer.stop();
 });

@@ -4,7 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "check": "./node_modules/.bin/tsc --noEmit",
     "exec": "./node_modules/.bin/ts-node -r tsconfig-paths/register"
   },
@@ -23,18 +23,44 @@
     "@types/ejs": "^3.0.6",
     "@types/express": "^4.17.11",
     "@types/inversify": "^2.0.33",
+    "@types/jest": "^26.0.20",
     "@types/js-yaml": "^4.0.0",
     "@types/moment": "^2.13.0",
     "@types/node": "^14.14.31",
     "@types/pg": "^7.14.10",
+    "jest": "^26.6.3",
+    "ts-jest": "^26.5.3",
     "ts-node": "^9.1.1",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^4.2.2"
   },
-  "moduleNameMapper": {
-    "@core/(.+)$": "<rootDir>/src/main/core/$1",
-    "@model/(.+)$": "<rootDir>/src/main/common/model/$1",
-    "@controllers/(.+)$": "<rootDir>/src/main/controllers/$1",
-    "@services/(.+)$": "<rootDir>/src/main/services/$1"
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "transformIgnorePatterns": [
+      "/node_modules/(?!(xxxx.*?\\.js$))"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsConfig": "tsconfig.json"
+      }
+    },
+    "testMatch": [
+      "**/test/**/*.test.ts"
+    ],
+    "moduleNameMapper": {
+      "@core/(.+)$": "<rootDir>/src/main/core/$1",
+      "@model/(.+)$": "<rootDir>/src/main/common/model/$1",
+      "@controllers/(.+)$": "<rootDir>/src/main/controllers/$1",
+      "@services/(.+)$": "<rootDir>/src/main/services/$1"
+    }
   }
 }

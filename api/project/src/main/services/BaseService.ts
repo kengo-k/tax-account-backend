@@ -121,7 +121,12 @@ returning id
 `;
     const connection = this.getConnection();
     console.log(sqlString);
-    return connection.query(sqlString);
+    const result = await connection.query(sqlString);
+    return {
+      command: result.command,
+      success: result.rowCount === 1,
+      id: result.rows[0].id,
+    };
   }
 }
 

@@ -117,6 +117,7 @@ export abstract class BaseService {
     const sqlString = `insert into
 ${tableName}(${keys.join(",")})
 values(${keys.map(getParam)})
+returning id
 `;
     const connection = this.getConnection();
     console.log(sqlString);

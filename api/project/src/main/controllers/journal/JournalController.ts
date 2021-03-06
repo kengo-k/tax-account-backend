@@ -21,12 +21,12 @@ export class JournalController {
       nullRows: [],
     });
     result
-      .then((x) => {
-        console.log(x);
-        res.send(JSON.stringify({ result: 5 }));
+      .then((result) => {
+        // TODO レスポンスの規格化
+        res.send(JSON.stringify(result));
       })
-      .catch((x) => {
-        console.log("catch!!");
+      .catch(() => {
+        // TODO エラー時のレスポンス
         res.send(JSON.stringify({ result: 5 }));
       });
   }

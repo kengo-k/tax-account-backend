@@ -88,7 +88,7 @@ export abstract class BaseService {
 
     const params: any = {};
     const rowNames = Object.keys(entity);
-    console.log(rowNames);
+
     for (const rowName of rowNames) {
       if (["id", "created_at", "updated_at"].includes(rowName)) {
         continue;

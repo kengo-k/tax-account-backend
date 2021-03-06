@@ -19,5 +19,5 @@ test("test", async () => {
     kasikata_value: 100,
     checked: "0",
   });
-  expect(result.data).toEqual({ result: 5 });
+  expect(result.data.success).toEqual(true);
 });

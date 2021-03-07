@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as yaml from "js-yaml";
 import { injectable } from "inversify";
-import { RootContext } from "@core/RootContext";
+import { ApplicationContext } from "@core/ApplicationContext";
 import { ConnectionWrapper } from "@core/connection/ConnectionWrapper";
 
 const postgres = require("postgres");
@@ -19,7 +19,7 @@ export class ConnectionProvider {
   }
 
   private createConnection(): ConnectionWrapper {
-    const dbConfigPath = `${RootContext.apiRootDir}/database.yml`;
+    const dbConfigPath = `${ApplicationContext.apiRootDir}/database.yml`;
     const dbConfigValue = fs.readFileSync(dbConfigPath, "utf8");
     const dbConfig: any = yaml.load(dbConfigValue);
 

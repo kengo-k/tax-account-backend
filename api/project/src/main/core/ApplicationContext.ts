@@ -9,11 +9,11 @@ const projectRootDir = `${srcRootDir}/../..`;
 // APIディレクトリのルート: /api
 const apiRootDir = `${projectRootDir}/..`;
 
-const RootContext = {
+const ApplicationContext = {
   srcRootDir: path.resolve(srcRootDir),
   projectRootDir: path.resolve(projectRootDir),
   apiRootDir: path.resolve(apiRootDir),
   templateRootDir: `${srcRootDir}/templates`,
 };
 
-export { RootContext };
+export { ApplicationContext };

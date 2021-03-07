@@ -45,7 +45,7 @@ namespace :schema do
     version = args['version']
     version ||= Time.now.strftime('%Y%m%d%H%M%S')
     path = "schema/#{version}.sql"
-    sh "pg_dump -U #{config['username']} -d #{config['database']} -h #{config['host']} -s >> #{path}"
+    sh "pg_dump -U #{config['username']} -d #{config['database']} -h #{config['host']} -s > #{path}"
     sh "chmod 666 #{path}"
   end
 

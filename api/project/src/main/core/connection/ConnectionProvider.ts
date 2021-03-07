@@ -2,20 +2,9 @@ import * as fs from "fs";
 import * as yaml from "js-yaml";
 import { injectable } from "inversify";
 import { RootContext } from "@core/RootContext";
-const postgres = require("postgres");
+import { ConnectionWrapper } from "@core/connection/ConnectionWrapper";
 
-/**
- * DBアダプター毎の実装差異を吸収するためのコネクションのラッパー
- */
-export class ConnectionWrapper {
-  public constructor(private realConnection: any) {}
-  public close() {
-    this.realConnection.end();
-  }
-  public get sql() {
-    return this.realConnection;
-  }
-}
+const postgres = require("postgres");
 
 @injectable()
 export class ConnectionProvider {

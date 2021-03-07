@@ -3,10 +3,21 @@ import * as yaml from "js-yaml";
 import { Client } from "pg";
 import { injectable } from "inversify";
 import { RootContext } from "@core/RootContext";
+const postgres = require("postgres");
+
+class ConnectionWrapper {
+  public constructor(private realConnection: any) {}
+  public close() {
+    this.realConnection.end();
+  }
+  public get sql() {
+    return this.realConnection;
+  }
+}
 
 @injectable()
 export class ConnectionProvider {
-  private connection: Client;
+  private connection: ConnectionWrapper;
 
   public constructor() {
     this.connection = this.createConnection();
@@ -16,7 +27,7 @@ export class ConnectionProvider {
     return this.connection;
   }
 
-  private createConnection(): Client {
+  private createConnection(): ConnectionWrapper {
     const dbConfigPath = `${RootContext.apiRootDir}/database.yml`;
     const dbConfigValue = fs.readFileSync(dbConfigPath, "utf8");
     const dbConfig: any = yaml.load(dbConfigValue);
@@ -33,14 +44,14 @@ export class ConnectionProvider {
     // console.log(`password: ${password}`);
     // console.log(`database : ${database}`);
 
-    const client = new Client({
+    const connection = postgres({
       host,
-      user,
+      username: user,
       password,
       database,
       port: 5432,
     });
 
-    return client;
+    return new ConnectionWrapper(connection);
   }
 }

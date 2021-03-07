@@ -36,7 +36,6 @@ class TestServer {
   public start() {
     const promise = new Promise((resolve) => {
       this.server = app.listen(port, async () => {
-        connection.connect();
         resolve(1);
       });
     });
@@ -44,7 +43,7 @@ class TestServer {
   }
 
   public stop() {
-    connection.end();
+    connection.close();
     this.server.close();
   }
 }

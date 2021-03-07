@@ -2,7 +2,6 @@ import * as fs from "fs";
 import * as ejs from "ejs";
 import * as moment from "moment";
 import { injectable } from "inversify";
-import { Client } from "pg";
 import { RootContext } from "@core/RootContext";
 import { ConnectionProvider } from "@core/connection/ConnectionProvider";
 
@@ -11,7 +10,7 @@ export abstract class BaseService {
   abstract connectionProvider: ConnectionProvider;
   constructor() {}
 
-  public getConnection(): Client {
+  public getConnection() {
     return this.connectionProvider.getConnection();
   }
 
@@ -38,7 +37,7 @@ export abstract class BaseService {
     const tableName = `${names[0].toLowerCase()}s`;
     const result = await this.select({
       responseType,
-      sql: `select * from ${tableName} where id = ${id}`,
+      sql: (sql) => sql`select * from ${sql(tableName)} where id = ${id}`,
     });
     // TODO データ件数が1でない場合はエラー
     return result[0];
@@ -46,29 +45,14 @@ export abstract class BaseService {
 
   public async select<RES>(option: {
     responseType: new () => RES;
-    sql?: string | undefined;
-    sqlParams?: any | undefined;
-    sqlTemplate?: string | undefined;
-    sqlTemplateParams?: any | undefined;
-    sqlParam?: any | undefined;
+    sql: (sql: any) => Promise<any>;
     resultHandler?: ((row: any) => RES) | undefined;
   }): Promise<RES[]> {
-    let sqlString = option.sql;
-    if (option.sqlTemplate != null) {
-      const loadSqlTemplate = this.getTemplateLoader(option.sqlTemplate);
-      sqlString = loadSqlTemplate(option.sqlTemplateParams);
-    }
-
-    if (sqlString == null) {
-      // TODO エラー整理
-      throw new Error();
-    }
-
     const connection = this.getConnection();
-    const result = await connection.query(sqlString);
+    const result = await option.sql(connection.sql);
     const res: RES[] = [];
 
-    for (const row of result.rows) {
+    for (const row of result) {
       if (option.resultHandler == null) {
         const elem: RES = new option.responseType();
         const propNames = Object.getOwnPropertyNames(row);
@@ -131,20 +115,19 @@ export abstract class BaseService {
     const currentDate = moment().format("YYYY-MM-DD HH:mm:ss");
     params["created_at"] = currentDate;
     params["updated_at"] = currentDate;
-    const getParam = getParamFromParams(params);
     const keys = Object.keys(params);
-    const sqlString = `insert into
-${tableName}(${keys.join(",")})
-values(${keys.map(getParam)})
-returning id
-`;
     const connection = this.getConnection();
-    const result = await connection.query(sqlString);
-    return {
+    const sql = connection.sql;
+
+    // prettier-ignore
+    const result = await sql`insert into ${sql(tableName)} ${sql(params, ...keys)} returning id`;
+
+    const ret = {
       command: result.command,
-      success: result.rowCount === 1,
-      id: result.rows[0].id,
+      success: result.count === 1,
+      id: result[0].id,
     };
+    return ret;
   }
 }
 
@@ -154,14 +137,3 @@ export enum TreatNull {
   DefaultIgnore,
   DefaultNull,
 }
-
-const getParamFromParams = (params: any) => (key: string) => {
-  // TODO SQLインジェクション対策
-  let param = params[key];
-  if (param === NULL) {
-    param = "null";
-  } else if (typeof param === "string") {
-    param = `'${param}'`;
-  }
-  return param;
-};

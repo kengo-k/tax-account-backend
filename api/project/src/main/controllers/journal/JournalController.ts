@@ -2,7 +2,7 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "@core/container/types";
 import { JournalEntity } from "@model/journal/JournalEntity";
 import { JournalService } from "@services/journal/JournalService";
-import { TreatNull } from "@services/BaseService";
+import { TreatNull } from "@services/misc";
 
 @injectable()
 export class JournalController {

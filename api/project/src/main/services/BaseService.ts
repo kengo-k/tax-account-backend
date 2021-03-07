@@ -1,8 +1,5 @@
-import * as fs from "fs";
-import * as ejs from "ejs";
 import * as moment from "moment";
 import { injectable } from "inversify";
-import { RootContext } from "@core/RootContext";
 import { ConnectionProvider } from "@core/connection/ConnectionProvider";
 
 @injectable()
@@ -14,15 +11,19 @@ export abstract class BaseService {
     return this.connectionProvider.getConnection();
   }
 
-  public getTemplateLoader(templatePath: string) {
-    const template = fs.readFileSync(
-      `${RootContext.templateRootDir}/${templatePath}`,
-      "utf8"
-    );
-    return (param: any | undefined = undefined) => {
-      return ejs.render(template, param);
-    };
-  }
+  // MEMO: templateを使う予定がなくなったので削除。
+  // 使いたくなった時のために一応残しておく。
+  // ※prepared statementに名前付きパラメータが使用できなさそうだったため
+  //
+  // public getTemplateLoader(templatePath: string) {
+  //   const template = fs.readFileSync(
+  //     `${RootContext.templateRootDir}/${templatePath}`,
+  //     "utf8"
+  //   );
+  //   return (param: any | undefined = undefined) => {
+  //     return ejs.render(template, param);
+  //   };
+  // }
 
   public async selectById<RES extends {}>(
     responseType: new () => RES,
@@ -70,7 +71,6 @@ export abstract class BaseService {
     return res;
   }
 
-  // TODO undefinedな値をどうするか、とかそのあたりをオプションで柔軟に扱えるようにする
   public async create(option: {
     entity: any;
     treatNull: TreatNull;

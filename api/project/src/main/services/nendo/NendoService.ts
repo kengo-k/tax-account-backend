@@ -12,11 +12,5 @@ export class NendoService extends BaseService {
     super();
   }
 
-  public selectNendoList() {
-    const nendoList = this.select({
-      responseType: JournalSearchResponse,
-      sqlTemplate: "service/nendo/selectNendoList.sql",
-    });
-    return nendoList;
-  }
+  public selectNendoList() {}
 }

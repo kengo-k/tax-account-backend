@@ -3,21 +3,33 @@ import axios from "axios";
 import { getContainer } from "@core/container/getContainer";
 import { TYPES } from "@core/container/types";
 import { ConnectionProvider } from "@core/connection/ConnectionProvider";
+import { ConnectionWrapper } from "@core/connection/ConnectionWrapper";
 
 // TODO コンフィグ化する
 const port = 8080;
 
-const container = getContainer();
-const connectionProvider = container.get<ConnectionProvider>(
-  TYPES.ConnectionProvider
-);
-const connection = connectionProvider.getConnection();
+// prettier-ignore
+const getConnection = () => {
+  const container = getContainer();
+  const connectionProvider = container.get<ConnectionProvider>(TYPES.ConnectionProvider);
+  const connection = connectionProvider.getConnection();
+  return connection;
+}
 
 class TestServer {
   private server: any;
+  private connection: ConnectionWrapper | undefined;
 
   constructor() {
     this.server = undefined;
+    this.connection = undefined;
+  }
+
+  public getConnection() {
+    if (this.connection == null) {
+      this.connection = getConnection();
+    }
+    return this.connection as ConnectionWrapper;
   }
 
   public getClient() {
@@ -43,7 +55,6 @@ class TestServer {
   }
 
   public stop() {
-    connection.close();
     this.server.close();
   }
 }

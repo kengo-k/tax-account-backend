@@ -1,10 +1,20 @@
+import { ApplicationContext, Env } from "@core/ApplicationContext";
 import { testServer } from "@test/testServer";
 
 beforeAll(async () => {
+  // DB接続環境をtestに設定する
+  ApplicationContext.setEnv(Env.development);
+  // テスト開始前にDBへ接続しておく
+  testServer.getConnection();
+  // expressを起動
   await testServer.start();
 });
 
 afterAll(() => {
+  // テスト終了後にDB接続を切断する
+  const connection = testServer.getConnection();
+  connection.close();
+  // expressを終了
   testServer.stop();
 });
 

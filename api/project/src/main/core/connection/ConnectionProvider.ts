@@ -8,26 +8,27 @@ const postgres = require("postgres");
 
 @injectable()
 export class ConnectionProvider {
-  private connection: ConnectionWrapper;
+  private connection: ConnectionWrapper | undefined;
 
-  public constructor() {
-    this.connection = this.createConnection();
-  }
+  public constructor() {}
 
   public getConnection() {
-    return this.connection;
+    if (this.connection == null) {
+      this.connection = this.createConnection();
+    }
+    return (this.connection as any) as ConnectionWrapper;
   }
 
   private createConnection(): ConnectionWrapper {
     const dbConfigPath = `${ApplicationContext.apiRootDir}/database.yml`;
     const dbConfigValue = fs.readFileSync(dbConfigPath, "utf8");
     const dbConfig: any = yaml.load(dbConfigValue);
+    const env = ApplicationContext.env;
 
     const host = dbConfig["common"]["host"];
     const username = dbConfig["common"]["username"];
     const password = dbConfig["common"]["username"];
-    // TODO: 環境に応じて切り替えること
-    const database = dbConfig["development"]["database"];
+    const database = dbConfig[env]["database"];
 
     const connection = postgres({
       host,

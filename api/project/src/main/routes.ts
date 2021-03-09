@@ -41,6 +41,8 @@ function buildRoute() {
   const container = getContainer();
   addRoute(GET, "/api/v1/journal/:id", container.get<JournalController>(TYPES.JournalController), (controller) => controller.selectById);
   addRoute(POST, "/api/v1/journal", container.get<JournalController>(TYPES.JournalController), (controller) => controller.create);
+  addRoute(PUT, "/api/v1/journal/:id", container.get<JournalController>(TYPES.JournalController), (controller) => controller.update);
+  addRoute(DELETE, "/api/v1/journal/:id", container.get<JournalController>(TYPES.JournalController), (controller) => controller.delete);
 }
 
 buildRoute();

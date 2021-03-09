@@ -1,12 +1,16 @@
 export {};
 import { BaseService } from "@services/BaseService";
 
+export interface SelectByIdResult<RES> {
+  body: RES | null;
+}
+
 declare module "@services/BaseService" {
   interface BaseService {
     selectById<RES extends {}>(
       responseType: new () => RES,
       id: number
-    ): Promise<RES>;
+    ): Promise<SelectByIdResult<RES>>;
   }
 }
 
@@ -21,10 +25,14 @@ BaseService.prototype.selectById = async function <RES extends {}>(
     throw new Error();
   }
   const tableName = `${names[0].toLowerCase()}s`;
-  const result = await this.select({
+  const result = await this.select(
     responseType,
-    sql: (sql) => sql`select * from ${sql(tableName)} where id = ${id}`,
-  });
-  // TODO データ件数が1でない場合はエラー
-  return result[0];
+    (sql) => sql`select * from ${sql(tableName)} where id = ${id}`
+  );
+
+  const ret = {
+    body: result.body.length === 1 ? result.body[0] : null,
+  };
+
+  return ret;
 };

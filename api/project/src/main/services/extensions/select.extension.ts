@@ -1,26 +1,41 @@
 export {};
 import { BaseService } from "@services/BaseService";
 
-interface OptionType<RES> {
-  responseType: new () => RES;
-  sql: (sql: any) => Promise<any>;
+export interface SelectResult<RES> {
+  body: RES[];
+}
+
+interface SelectOption<RES> {
   resultHandler?: ((row: any) => RES) | undefined;
 }
 
 declare module "@services/BaseService" {
   interface BaseService {
-    select<RES>(option: OptionType<RES>): Promise<RES[]>;
+    select<RES>(
+      responseType: new () => RES,
+      sql: (sql: any) => Promise<any>,
+      option?: SelectOption<RES> | undefined
+    ): Promise<SelectResult<RES>>;
   }
 }
 
-BaseService.prototype.select = async function <RES>(option: OptionType<RES>) {
+BaseService.prototype.select = async function <RES>(
+  responseType: new () => RES,
+  sql: (sql: any) => Promise<any>,
+  option: SelectOption<RES> | undefined = undefined
+) {
+  if (option == null) {
+    option = {
+      resultHandler: undefined,
+    };
+  }
   const connection = this.getConnection();
-  const result = await option.sql(connection.sql);
+  const result = await sql(connection.sql);
   const res: RES[] = [];
 
   for (const row of result) {
     if (option.resultHandler == null) {
-      const elem: RES = new option.responseType();
+      const elem: RES = new responseType();
       const propNames = Object.getOwnPropertyNames(row);
       for (const propName of propNames) {
         const anyElem = (elem as any) as object;
@@ -33,5 +48,9 @@ BaseService.prototype.select = async function <RES>(option: OptionType<RES>) {
     }
   }
 
-  return res;
+  const ret = {
+    body: res,
+  };
+
+  return ret;
 };

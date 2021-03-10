@@ -25,14 +25,17 @@ BaseService.prototype.selectById = async function <RES extends {}>(
     throw new Error();
   }
   const tableName = `${names[0].toLowerCase()}s`;
-  const result = await this.select(
-    responseType,
-    (sql) => sql`select * from ${sql(tableName)} where id = ${id}`
-  );
+  try {
+    const result = await this.select(
+      responseType,
+      (sql) => sql`select * from ${sql(tableName)} where id = ${id}`
+    );
+    const ret = {
+      body: result.body.length === 1 ? result.body[0] : null,
+    };
 
-  const ret = {
-    body: result.body.length === 1 ? result.body[0] : null,
-  };
-
-  return ret;
+    return ret;
+  } catch (e) {
+    throw e;
+  }
 };

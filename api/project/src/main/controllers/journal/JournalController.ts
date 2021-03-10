@@ -2,7 +2,7 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "@core/container/types";
 import { JournalEntity } from "@common/model/journal/JournalEntity";
 import { JournalService } from "@services/journal/JournalService";
-import { ApplicationError } from "@common/error/ApplicationError";
+import { ApplicationError, RequestError } from "@common/error/ApplicationError";
 import { SystemError } from "@common/error/SystemError";
 import { ErrorResponse } from "@common/model/Response";
 
@@ -31,6 +31,14 @@ export class BaseController {
     res.status(error.HTTP_CODE);
     res.send(JSON.stringify(response));
   }
+
+  public checkId(req: any) {
+    const id = req.params["id"] - 0;
+    if (isNaN(id)) {
+      throw new RequestError(`invalid id format: ${req.params["id"]}`);
+    }
+    return id;
+  }
 }
 
 @injectable()
@@ -44,7 +52,7 @@ export class JournalController extends BaseController {
 
   public selectById(req: any, res: any) {
     this.execute(req, res, async () => {
-      const id = req.params["id"] - 0;
+      const id = this.checkId(req);
       const result = await this.journalService.selectById(JournalEntity, id);
       res.send(JSON.stringify(result));
     });

@@ -73,3 +73,13 @@ test("CRUD", async () => {
   const selectResult2 = await client.get(`${apiPath}/${insertResult.data.body.id}`);
   expect(selectResult2.data.body).toBeNull();
 });
+
+test("error", async () => {
+  const client = testServer.getClient();
+  const apiPath = "/api/v1/journal";
+  // 不正なIDを使用
+  const selectResult = await client.get(`${apiPath}/xxx`);
+  expect(selectResult.data.success).toBeFalsy();
+  expect(selectResult.status).toEqual(400);
+  expect(selectResult.data.error.HTTP_CODE).toEqual(400);
+});

@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import { TYPES } from "@core/container/types";
-import { JournalEntity } from "@model/journal/JournalEntity";
+import { JournalEntity } from "@common/model/journal/JournalEntity";
 import { JournalService } from "@services/journal/JournalService";
 import { NullOption, TreatNull } from "@services/misc";
 

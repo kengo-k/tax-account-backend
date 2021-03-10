@@ -12,7 +12,7 @@
     "paths": {
       "@test/*": ["src/test/*"],
       "@core/*": ["src/main/core/*"],
-      "@model/*": ["src/main/common/model/*"],
+      "@common/*": ["src/main/common/*"],
       "@controllers/*": ["src/main/controllers/*"],
       "@services/*": ["src/main/services/*"]
     },

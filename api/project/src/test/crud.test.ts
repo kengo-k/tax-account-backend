@@ -8,7 +8,7 @@ beforeAll(async () => {
   // テスト開始前にDBへ接続しておく
   testServer.getConnection();
   // テスト前にDBを再作成する
-  child_process.execSync("./init_test.sh");
+  child_process.execSync("/opt/project/init_test.sh");
   // 空のDBに初期データを設定する
   child_process.execSync("./import_test.sh init");
   // expressを起動
@@ -23,7 +23,7 @@ afterAll(() => {
   testServer.stop();
 });
 
-test("test CRUD", async () => {
+test("CRUD", async () => {
   const client = testServer.getClient();
   const apiPath = "/api/v1/journal";
 
@@ -44,7 +44,6 @@ test("test CRUD", async () => {
   // select
   // prettier-ignore
   const selectResult = await client.get(`${apiPath}/${insertResult.data.body.id}`);
-  //console.log(selectResult);
   expect(selectResult.data.body.id).toEqual(insertResult.data.body.id);
 
   // update

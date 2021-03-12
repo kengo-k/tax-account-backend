@@ -41,6 +41,7 @@ class TestServer {
       },
       responseType: "json",
       timeout: 15000,
+      validateStatus: () => true,
     });
     return client;
   }

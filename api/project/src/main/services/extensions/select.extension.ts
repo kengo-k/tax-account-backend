@@ -1,5 +1,6 @@
 export {};
 import { BaseService } from "@services/BaseService";
+import { SQLError } from "@common/error/SQLError";
 
 export interface SelectResult<RES> {
   body: RES[];
@@ -30,27 +31,29 @@ BaseService.prototype.select = async function <RES>(
     };
   }
   const connection = this.getConnection();
-  const result = await sql(connection.sql);
-  const res: RES[] = [];
-
-  for (const row of result) {
-    if (option.resultHandler == null) {
-      const elem: RES = new responseType();
-      const propNames = Object.getOwnPropertyNames(row);
-      for (const propName of propNames) {
-        const anyElem = (elem as any) as object;
-        Reflect.set(anyElem, propName, row[propName]);
+  try {
+    const result = await sql(connection.sql);
+    const res: RES[] = [];
+    for (const row of result) {
+      if (option.resultHandler == null) {
+        const elem: RES = new responseType();
+        const propNames = Object.getOwnPropertyNames(row);
+        for (const propName of propNames) {
+          const anyElem = (elem as any) as object;
+          Reflect.set(anyElem, propName, row[propName]);
+        }
+        res.push(elem);
+      } else {
+        const elem = option.resultHandler(row);
+        res.push(elem);
       }
-      res.push(elem);
-    } else {
-      const elem = option.resultHandler(row);
-      res.push(elem);
     }
+    const ret = {
+      body: res,
+    };
+
+    return ret;
+  } catch (e) {
+    throw new SQLError(e);
   }
-
-  const ret = {
-    body: res,
-  };
-
-  return ret;
 };

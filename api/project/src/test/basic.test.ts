@@ -1,6 +1,6 @@
 import { testServer } from "@test/testServer";
 
-test("CRUD", async () => {
+test("basic CRUD functions", async () => {
   const client = testServer.getClient();
   const apiPath = "/api/v1/journal";
 

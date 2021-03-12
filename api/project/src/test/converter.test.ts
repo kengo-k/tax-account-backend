@@ -13,9 +13,9 @@ interface TestType {
 test("converter", async () => {
   const converter = new Converter<TestType>();
   const { add } = converter;
-  add("a", ConverterItem.Number, true);
-  add("b", ConverterItem.String, true);
-  add("c", ConverterItem.Number, false);
+  add("a", ConverterItem.Number, true, true);
+  add("b", ConverterItem.String, true, true);
+  add("c", ConverterItem.Number, false, true);
 
   // 正常系(全項目あり)
   const res1 = converter.isConvertible({ a: 5, b: "hello", c: 1 });

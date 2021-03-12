@@ -2,44 +2,8 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "@core/container/types";
 import { JournalEntity } from "@common/model/journal/JournalEntity";
 import { JournalService } from "@services/journal/JournalService";
-import { ApplicationError, RequestError } from "@common/error/ApplicationError";
-import { SystemError } from "@common/error/SystemError";
-import { ErrorResponse } from "@common/model/Response";
-
-@injectable()
-export class BaseController {
-  public async execute(req: any, res: any, run: () => void) {
-    try {
-      await run();
-    } catch (e) {
-      if (e instanceof SystemError) {
-        this.setErrorResponse(res, e);
-      } else if (e instanceof ApplicationError) {
-        this.setErrorResponse(res, e);
-      } else {
-        res.status(500);
-        res.send("uncaught system error");
-      }
-    }
-  }
-
-  public setErrorResponse(res: any, error: ApplicationError | SystemError) {
-    const response: ErrorResponse = {
-      success: false,
-      error,
-    };
-    res.status(error.HTTP_CODE);
-    res.send(JSON.stringify(response));
-  }
-
-  public checkId(req: any) {
-    const id = req.params["id"] - 0;
-    if (isNaN(id)) {
-      throw new RequestError(`invalid id format: ${req.params["id"]}`);
-    }
-    return id;
-  }
-}
+import { RequestError } from "@common/error/ApplicationError";
+import { BaseController } from "@controllers/BaseController";
 
 @injectable()
 export class JournalController extends BaseController {
@@ -54,50 +18,43 @@ export class JournalController extends BaseController {
     this.execute(req, res, async () => {
       const id = this.checkId(req);
       const result = await this.journalService.selectById(JournalEntity, id);
-      res.send(JSON.stringify(result));
+      return result;
     });
   }
 
   // TODO anyやめる
   public create(req: any, res: any) {
-    const result = this.journalService.create(new JournalEntity(req.body));
-    result
-      .then((result) => {
-        // TODO レスポンスの規格化
-        res.send(JSON.stringify(result));
-      })
-      .catch(() => {
-        // TODO エラー時のレスポンス
-        res.send(JSON.stringify({ result: 5 }));
-      });
+    this.execute(req, res, async () => {
+      const [param] = JournalEntity.isCreatable(req.body);
+      if (param == null) {
+        throw new RequestError(`invalid request: ${JSON.stringify(req.body)}`);
+      }
+      const requestEntity = new JournalEntity(param);
+      const result = await this.journalService.create(requestEntity);
+      return result;
+    });
   }
 
   public update(req: any, res: any) {
-    let param = req.body;
-    Object.assign(param, { id: req.params["id"] - 0 });
-    const result = this.journalService.update(new JournalEntity(param));
-    result
-      .then((result) => {
-        // TODO レスポンスの規格化
-        res.send(JSON.stringify(result));
-      })
-      .catch(() => {
-        // TODO エラー時のレスポンス
-        res.send(JSON.stringify({ result: 5 }));
-      });
+    this.execute(req, res, async () => {
+      const id = this.checkId(req);
+      const [param] = JournalEntity.isUpdatable(req.body);
+      if (param == null) {
+        throw new RequestError(`invalid request: ${JSON.stringify(req.body)}`);
+      }
+      Object.assign(param, { id });
+      const requestEntity = new JournalEntity(param);
+      const result = await this.journalService.update(requestEntity);
+      return result;
+    });
   }
 
   public delete(req: any, res: any) {
-    const id = req.params["id"] - 0;
-    const result = this.journalService.delete(new JournalEntity({ id }));
-    result
-      .then((result) => {
-        // TODO レスポンスの規格化
-        res.send(JSON.stringify(result));
-      })
-      .catch(() => {
-        // TODO エラー時のレスポンス
-        res.send(JSON.stringify({ result: 5 }));
-      });
+    this.execute(req, res, async () => {
+      const id = this.checkId(req);
+      const requestEntity = new JournalEntity({ id });
+      const result = await this.journalService.delete(requestEntity);
+      return result;
+    });
   }
 }

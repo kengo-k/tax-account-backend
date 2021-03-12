@@ -4,10 +4,6 @@ import {
   ConverterErrorMessage,
 } from "@common/Converter";
 
-beforeAll(async () => {});
-
-afterAll(() => {});
-
 interface TestType {
   a: number;
   b: string;
@@ -37,7 +33,6 @@ test("converter", async () => {
 
   // 異常系(存在しないキーx)
   const res4 = converter.isConvertible({ a: 5, b: "hello", x: 5 });
-  console.log(res4);
   expect(res4.isConvertible()).toBeFalsy();
   expect(res4.errors.length).toEqual(1);
   expect(res4.getError()["x"]).toEqual(ConverterErrorMessage.NotExist);

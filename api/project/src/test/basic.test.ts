@@ -1,29 +1,6 @@
-import { ApplicationContext, Env } from "@core/ApplicationContext";
 import { testServer } from "@test/testServer";
-import * as child_process from "child_process";
 
-beforeAll(async () => {
-  // DB接続環境をtestに設定する
-  ApplicationContext.setEnv(Env.development);
-  // テスト開始前にDBへ接続しておく
-  testServer.getConnection();
-  // テスト前にDBを再作成する
-  child_process.execSync("./init_test.sh");
-  // 空のDBに初期データを設定する
-  child_process.execSync("./import_test.sh init");
-  // expressを起動
-  await testServer.start();
-});
-
-afterAll(() => {
-  // テスト終了後にDB接続を切断する
-  const connection = testServer.getConnection();
-  connection.close();
-  // expressを終了
-  testServer.stop();
-});
-
-test("test CRUD", async () => {
+test("CRUD", async () => {
   const client = testServer.getClient();
   const apiPath = "/api/v1/journal";
 
@@ -44,7 +21,6 @@ test("test CRUD", async () => {
   // select
   // prettier-ignore
   const selectResult = await client.get(`${apiPath}/${insertResult.data.body.id}`);
-  //console.log(selectResult);
   expect(selectResult.data.body.id).toEqual(insertResult.data.body.id);
 
   // update
@@ -73,4 +49,14 @@ test("test CRUD", async () => {
   // prettier-ignore
   const selectResult2 = await client.get(`${apiPath}/${insertResult.data.body.id}`);
   expect(selectResult2.data.body).toBeNull();
+});
+
+test("error", async () => {
+  const client = testServer.getClient();
+  const apiPath = "/api/v1/journal";
+  // 不正なIDを使用
+  const selectResult = await client.get(`${apiPath}/xxx`);
+  expect(selectResult.data.success).toBeFalsy();
+  expect(selectResult.status).toEqual(400);
+  expect(selectResult.data.error.HTTP_CODE).toEqual(400);
 });

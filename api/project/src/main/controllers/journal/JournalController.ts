@@ -60,44 +60,37 @@ export class JournalController extends BaseController {
 
   // TODO anyやめる
   public create(req: any, res: any) {
-    const result = this.journalService.create(new JournalEntity(req.body));
-    result
-      .then((result) => {
-        // TODO レスポンスの規格化
-        res.send(JSON.stringify(result));
-      })
-      .catch(() => {
-        // TODO エラー時のレスポンス
-        res.send(JSON.stringify({ result: 5 }));
-      });
+    this.execute(req, res, async () => {
+      const [param] = JournalEntity.isCreatable(req.body);
+      if (param == null) {
+        throw new RequestError(`invalid request: ${JSON.stringify(req.body)}`);
+      }
+      const requestEntity = new JournalEntity(param);
+      const result = await this.journalService.create(requestEntity);
+      res.send(JSON.stringify(result));
+    });
   }
 
   public update(req: any, res: any) {
-    let param = req.body;
-    Object.assign(param, { id: req.params["id"] - 0 });
-    const result = this.journalService.update(new JournalEntity(param));
-    result
-      .then((result) => {
-        // TODO レスポンスの規格化
-        res.send(JSON.stringify(result));
-      })
-      .catch(() => {
-        // TODO エラー時のレスポンス
-        res.send(JSON.stringify({ result: 5 }));
-      });
+    this.execute(req, res, async () => {
+      const id = this.checkId(req);
+      const [param] = JournalEntity.isUpdatable(req.body);
+      if (param == null) {
+        throw new RequestError(`invalid request: ${JSON.stringify(req.body)}`);
+      }
+      Object.assign(param, { id });
+      const requestEntity = new JournalEntity(param);
+      const result = await this.journalService.update(requestEntity);
+      res.send(JSON.stringify(result));
+    });
   }
 
   public delete(req: any, res: any) {
-    const id = req.params["id"] - 0;
-    const result = this.journalService.delete(new JournalEntity({ id }));
-    result
-      .then((result) => {
-        // TODO レスポンスの規格化
-        res.send(JSON.stringify(result));
-      })
-      .catch(() => {
-        // TODO エラー時のレスポンス
-        res.send(JSON.stringify({ result: 5 }));
-      });
+    this.execute(req, res, async () => {
+      const id = this.checkId(req);
+      const requestEntity = new JournalEntity({ id });
+      const result = await this.journalService.delete(requestEntity);
+      res.send(JSON.stringify(result));
+    });
   }
 }

@@ -58,6 +58,8 @@
     "testMatch": [
       "**/test/**/*.test.ts"
     ],
+    "globalSetup": "<rootDir>/src/test/setup.ts",
+    "globalTeardown": "<rootDir>/src/test/teardown.ts",
     "moduleNameMapper": {
       "@test/(.+)$": "<rootDir>/src/test/$1",
       "@core/(.+)$": "<rootDir>/src/main/core/$1",

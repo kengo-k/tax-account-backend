@@ -1,27 +1,4 @@
-import { ApplicationContext, Env } from "@core/ApplicationContext";
 import { testServer } from "@test/testServer";
-import * as child_process from "child_process";
-
-beforeAll(async () => {
-  // DB接続環境をtestに設定する
-  ApplicationContext.setEnv(Env.development);
-  // テスト開始前にDBへ接続しておく
-  testServer.getConnection();
-  // テスト前にDBを再作成する
-  child_process.execSync("/opt/project/init_test.sh");
-  // 空のDBに初期データを設定する
-  child_process.execSync("./import_test.sh init");
-  // expressを起動
-  await testServer.start();
-});
-
-afterAll(() => {
-  // テスト終了後にDB接続を切断する
-  const connection = testServer.getConnection();
-  connection.close();
-  // expressを終了
-  testServer.stop();
-});
 
 test("CRUD", async () => {
   const client = testServer.getClient();

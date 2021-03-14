@@ -1,16 +1,12 @@
 export {};
 import { BaseService } from "@services/BaseService";
 
-export interface SelectByIdResult<RES> {
-  body: RES | null;
-}
-
 declare module "@services/BaseService" {
   interface BaseService {
     selectById<RES extends {}>(
       responseType: new () => RES,
       id: number
-    ): Promise<SelectByIdResult<RES>>;
+    ): Promise<RES | null>;
   }
 }
 
@@ -30,11 +26,7 @@ BaseService.prototype.selectById = async function <RES extends {}>(
       responseType,
       (sql) => sql`select * from ${sql(tableName)} where id = ${id}`
     );
-    const ret = {
-      body: result.body.length === 1 ? result.body[0] : null,
-    };
-
-    return ret;
+    return result.length === 1 ? result[0] : null;
   } catch (e) {
     throw e;
   }

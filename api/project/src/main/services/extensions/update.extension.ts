@@ -2,15 +2,11 @@ export {};
 import * as moment from "moment";
 import { BaseService } from "@services/BaseService";
 
-interface UpdateResult<RES> {
-  body: RES | null;
-}
-
 declare module "@services/BaseService" {
   interface BaseService {
     update<RES>(
       entity: { id?: number | undefined } & Partial<Omit<RES, "id">>
-    ): Promise<UpdateResult<RES>>;
+    ): Promise<RES | null>;
   }
 }
 
@@ -46,8 +42,5 @@ BaseService.prototype.update = async function <RES>(
 
   // prettier-ignore
   const updateResult = await sql`update ${sql(tableName)} set ${sql(params, ...keys)} where id = ${entity.id} returning *`;
-  const ret = {
-    body: updateResult.count === 1 ? updateResult[0] : null,
-  };
-  return ret;
+  return updateResult.count === 1 ? updateResult[0] : null;
 };

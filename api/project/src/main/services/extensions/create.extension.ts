@@ -2,13 +2,9 @@ export {};
 import { BaseService } from "@services/BaseService";
 import * as moment from "moment";
 
-interface CreateResult<RES> {
-  body: RES | null;
-}
-
 declare module "@services/BaseService" {
   interface BaseService {
-    create<RES extends {}>(entity: RES): Promise<CreateResult<RES>>;
+    create<RES extends {}>(entity: RES): Promise<RES | null>;
   }
 }
 
@@ -44,8 +40,5 @@ BaseService.prototype.create = async function <RES extends {}>(entity: RES) {
 
   // prettier-ignore
   const result = await sql`insert into ${sql(tableName)} ${sql(params, ...keys)} returning *`;
-  const ret = {
-    body: result.count === 1 ? result[0] : null,
-  };
-  return ret;
+  return result.count === 1 ? result[0] : null;
 };

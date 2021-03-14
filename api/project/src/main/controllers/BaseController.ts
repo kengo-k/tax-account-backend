@@ -1,14 +1,18 @@
 import { injectable } from "inversify";
 import { ApplicationError, RequestError } from "@common/error/ApplicationError";
 import { SystemError } from "@common/error/SystemError";
-import { ErrorResponse } from "@common/model/Response";
+import { ErrorResponse, SuccessResponse } from "@common/model/Response";
 
 @injectable()
 export class BaseController {
   public async execute(req: any, res: any, run: () => void) {
     try {
       const result = await run();
-      res.send(JSON.stringify(result));
+      const successResponse: SuccessResponse = {
+        success: true,
+        body: result,
+      };
+      res.send(JSON.stringify(successResponse));
     } catch (e) {
       if (e instanceof SystemError) {
         this.setErrorResponse(res, e);

@@ -2,7 +2,7 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "@core/container/types";
 import { JournalEntity } from "@common/model/journal/JournalEntity";
 import { JournalService } from "@services/journal/JournalService";
-import { RequestError } from "@common/error/ApplicationError";
+import { NotFoundError, RequestError } from "@common/error/ApplicationError";
 import { BaseController } from "@controllers/BaseController";
 
 @injectable()
@@ -18,6 +18,10 @@ export class JournalController extends BaseController {
     this.execute(req, res, async () => {
       const id = this.checkId(req);
       const result = await this.journalService.selectById(JournalEntity, id);
+      if (result == null) {
+        // prettier-ignore
+        throw new NotFoundError(`invalid result: select for JournalEntity(${id}) was not found`);
+      }
       return result;
     });
   }
@@ -27,10 +31,15 @@ export class JournalController extends BaseController {
     this.execute(req, res, async () => {
       const [param] = JournalEntity.isCreatable(req.body);
       if (param == null) {
-        throw new RequestError(`invalid request: ${JSON.stringify(req.body)}`);
+        // prettier-ignore
+        throw new RequestError(`invalid request: create for ${JSON.stringify(req.body)}`);
       }
       const requestEntity = new JournalEntity(param);
       const result = await this.journalService.create(requestEntity);
+      if (result == null) {
+        // prettier-ignore
+        throw new NotFoundError(`invalid result: create for JournalEntity`);
+      }
       return result;
     });
   }
@@ -40,11 +49,16 @@ export class JournalController extends BaseController {
       const id = this.checkId(req);
       const [param] = JournalEntity.isUpdatable(req.body);
       if (param == null) {
-        throw new RequestError(`invalid request: ${JSON.stringify(req.body)}`);
+        // prettier-ignore
+        throw new RequestError(`invalid request: update for ${JSON.stringify(req.body)}`);
       }
       Object.assign(param, { id });
       const requestEntity = new JournalEntity(param);
       const result = await this.journalService.update(requestEntity);
+      if (result == null) {
+        // prettier-ignore
+        throw new NotFoundError(`invalid result: update for JournalEntity(${id}) was not found`);
+      }
       return result;
     });
   }
@@ -54,6 +68,10 @@ export class JournalController extends BaseController {
       const id = this.checkId(req);
       const requestEntity = new JournalEntity({ id });
       const result = await this.journalService.delete(requestEntity);
+      if (result == null) {
+        // prettier-ignore
+        throw new NotFoundError(`invalid result: delete for JournalEntity(${id}) was not found`);
+      }
       return result;
     });
   }

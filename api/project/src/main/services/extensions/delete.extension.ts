@@ -9,7 +9,7 @@ declare module "@services/BaseService" {
   interface BaseService {
     delete<RES>(
       entity: { id?: number | undefined } & Partial<Omit<RES, "id">>
-    ): Promise<DeleteResult<RES>>;
+    ): Promise<RES | null>;
   }
 }
 
@@ -27,8 +27,5 @@ BaseService.prototype.delete = async function <RES>(
 
   // prettier-ignore
   const deleteResult = await sql`delete from ${sql(tableName)} where id = ${entity.id} returning *`;
-  const ret = {
-    body: deleteResult.count === 1 ? deleteResult[0] : null,
-  };
-  return ret;
+  return deleteResult.count === 1 ? deleteResult[0] : null;
 };

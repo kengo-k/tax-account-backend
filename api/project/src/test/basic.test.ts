@@ -39,16 +39,16 @@ test("basic CRUD functions", async () => {
   expect(updateResult2.data.body.note).toBeNull();
 
   // delete
-  const deleteResult = await client.delete(
-    `${apiPath}/${insertResult.data.body.id}`
-  );
+  // prettier-ignore
+  const deleteResult = await client.delete(`${apiPath}/${insertResult.data.body.id}`);
   expect(deleteResult.data.body).toBeTruthy();
   expect(deleteResult.data.body.id).toEqual(insertResult.data.body.id);
 
   // select after delete
   // prettier-ignore
   const selectResult2 = await client.get(`${apiPath}/${insertResult.data.body.id}`);
-  expect(selectResult2.data.body).toBeNull();
+  expect(selectResult2.data.success).toBeFalsy();
+  expect(selectResult2.status).toEqual(404);
 });
 
 test("error", async () => {

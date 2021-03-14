@@ -1,10 +1,6 @@
 export {};
 import { BaseService } from "@services/BaseService";
-import { SQLError } from "@common/error/SQLError";
-
-export interface SelectResult<RES> {
-  body: RES[];
-}
+import { SQLError } from "@common/error/SystemError";
 
 interface SelectOption<RES> {
   resultHandler?: ((row: any) => RES) | undefined;
@@ -16,7 +12,7 @@ declare module "@services/BaseService" {
       responseType: new () => RES,
       sql: (sql: any) => Promise<any>,
       option?: SelectOption<RES> | undefined
-    ): Promise<SelectResult<RES>>;
+    ): Promise<RES[]>;
   }
 }
 
@@ -48,11 +44,7 @@ BaseService.prototype.select = async function <RES>(
         res.push(elem);
       }
     }
-    const ret = {
-      body: res,
-    };
-
-    return ret;
+    return res;
   } catch (e) {
     throw new SQLError(e);
   }

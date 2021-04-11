@@ -10,14 +10,10 @@ class CreateKamokuMaster < ActiveRecord::Migration[5.0]
       t.text :kamoku_ryaku_name, null: false
       # 科目カナ名称(科目検索用)
       t.text :kamoku_kana_name, null: false
-      # 科目分類: ("1": "資産", "2": "負債", "3": "純資産", "4": "収益", "5": "費用")
+      # 科目分類
       t.string :kamoku_bunrui_cd, limit: 1, null: false
-      # 科目タイプ: ("1": "借方", "2": "貸方")
-      # 資産の増加/減少=借方/貸方
-      # 負債の増加/減少=貸方/借方
-      # 費用の増加/減少=借方/貸方
-      # 収益の増加/減少=貸方/借方
-      t.string :kamoku_type, limit: 1, null: false
+      # 説明
+      t.text :description, null: true
       t.timestamps
     end
   end

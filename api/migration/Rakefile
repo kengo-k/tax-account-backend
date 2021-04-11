@@ -80,7 +80,7 @@ namespace :data do
     config = get_config args['env']
     timestamp = Time.now.strftime('%Y%m%d%H%M%S')
     table = args['table']
-    sh %Q[psql -U #{config['username']} -d #{config['database']} -h #{config['host']} -c "\\copy #{table} to 'export/#{timestamp}/#{file}' CSV HEADER"]
+    sh %Q[psql -U #{config['username']} -d #{config['database']} -h #{config['host']} -c "\\copy #{table} to '#{table}_#{timestamp}.csv' CSV HEADER"]
   end
 
 end

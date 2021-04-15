@@ -4,6 +4,7 @@ import { JournalEntity } from "@common/model/journal/JournalEntity";
 import { JournalService } from "@services/journal/JournalService";
 import { NotFoundError, RequestError } from "@common/error/ApplicationError";
 import { BaseController } from "@controllers/BaseController";
+import { LedgerSearchRequest } from "@common/model/journal/LedgerSearchRequest";
 
 @injectable()
 export class JournalController extends BaseController {
@@ -72,6 +73,21 @@ export class JournalController extends BaseController {
         // prettier-ignore
         throw new NotFoundError(`invalid result: delete for JournalEntity(${id}) was not found`);
       }
+      return result;
+    });
+  }
+
+  public selectLedger(req: any, res: any) {
+    this.execute(req, res, async () => {
+      const [param] = LedgerSearchRequest.isValid(req.params);
+      if (param == null) {
+        // prettier-ignore
+        throw new RequestError(
+          `invalid request: ${JSON.stringify(req.params)}`
+        );
+      }
+      const request = new LedgerSearchRequest(param);
+      const result = await this.journalService.selectLedger(request);
       return result;
     });
   }

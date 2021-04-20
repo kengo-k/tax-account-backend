@@ -5,6 +5,12 @@ import { ConnectionProvider } from "@core/connection/ConnectionProvider";
 import { SaimokuSearchRequest } from "@common/model/master/SaimokuSearchRequest";
 import { SaimokuSearchResponse } from "@common/model/master/SaimokuSearchResponse";
 import { selectSaimokuDetail as getSelectSaimokuDetailSql } from "@services/master/selectSaimokuDetail.sql";
+import { NendoMasterEntity } from "@common/model/master/NendoMasterEntity";
+import {
+  EntitySearchCondition,
+  EntitySearchType,
+  Order,
+} from "@common/model/Entity";
 
 export class SaimokuService extends BaseService {
   public constructor(
@@ -23,5 +29,16 @@ export class SaimokuService extends BaseService {
       SaimokuSearchResponse,
       getSelectSaimokuDetailSql(condition)
     );
+  }
+
+  /**
+   * 対象年度の一覧を取得する
+   * @returns
+   */
+  public async selectNendoList() {
+    const searchCondition: EntitySearchCondition<NendoMasterEntity> = {
+      orderBy: [["nendo", Order.Desc]],
+    };
+    return await this.selectByEntity(NendoMasterEntity, searchCondition);
   }
 }

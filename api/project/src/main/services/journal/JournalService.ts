@@ -5,22 +5,22 @@ import { ConnectionProvider } from "@core/connection/ConnectionProvider";
 import { LedgerSearchRequest } from "@common/model/journal/LedgerSearchRequest";
 import { LedgerSearchResponse } from "@common/model/journal/LedgerSearchResponse";
 import { selectLedger as getSelectLedgerSql } from "./selectLedger.sql";
-import { SaimokuService } from "@services/master/SaimokuService";
+import { MasterService } from "@services/master/MasterService";
 
 @injectable()
 export class JournalService extends BaseService {
   public constructor(
     @inject(TYPES.ConnectionProvider)
     public connectionProvider: ConnectionProvider,
-    @inject(TYPES.SaimokuService)
-    public saimokuService: SaimokuService
+    @inject(TYPES.MasterService)
+    public masterService: MasterService
   ) {
     super();
   }
 
   public async selectLedger(condition: LedgerSearchRequest) {
     const saimokuDetail = (
-      await this.saimokuService.selectSaimokuDetail({
+      await this.masterService.selectSaimokuDetail({
         saimoku_cd: condition.target_cd,
       })
     )[0];

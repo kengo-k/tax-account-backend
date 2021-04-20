@@ -1,6 +1,7 @@
 import { getContainer } from "@core/container/getContainer";
 import { TYPES } from "@core/container/types";
 import { JournalController } from "@controllers/journal/JournalController";
+import { PresentationController } from "@controllers/presentation/PresentationController";
 
 export enum API_METHOD {
   GET,
@@ -39,11 +40,15 @@ const { GET, POST, PUT, DELETE } = API_METHOD;
 // prettier-ignore
 function buildRoute() {
   const container = getContainer();
+  // core api
   addRoute(GET, "/api/v1/journal/:id", container.get<JournalController>(TYPES.JournalController), (controller) => controller.selectById);
   addRoute(POST, "/api/v1/journal", container.get<JournalController>(TYPES.JournalController), (controller) => controller.create);
   addRoute(PUT, "/api/v1/journal/:id", container.get<JournalController>(TYPES.JournalController), (controller) => controller.update);
   addRoute(DELETE, "/api/v1/journal/:id", container.get<JournalController>(TYPES.JournalController), (controller) => controller.delete);
   addRoute(GET, "/api/v1/ledger/:nendo/:target_cd", container.get<JournalController>(TYPES.JournalController), (controller) => controller.selectLedger);
+
+  // presentation api
+  addRoute(GET, "/papi/v1/init", container.get<PresentationController>(TYPES.PresentationController), (controller) => controller.selectInit);
 }
 
 buildRoute();

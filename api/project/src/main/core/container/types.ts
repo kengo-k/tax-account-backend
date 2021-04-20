@@ -1,14 +1,13 @@
 const TYPES = {
   // Connection
   ConnectionProvider: Symbol.for("ConnectionProvider"),
-  // Controllers&Services
-  // Journal
+  // Controllers
   JournalController: Symbol.for("JournalController"),
-  JournalService: Symbol.for("JournalService"),
-  // Master
   MasterController: Symbol.for("MasterController"),
-  SaimokuService: Symbol.for("SaimokuService"),
-  NendoService: Symbol.for("NendoService"),
+  PresentationController: Symbol.for("PresentationController"),
+  // Services
+  JournalService: Symbol.for("JournalService"),
+  MasterService: Symbol.for("MasterService"),
 };
 
 export { TYPES };

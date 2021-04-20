@@ -1,11 +1,11 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
 import { routes, API_METHOD, Route } from "./routes";
-import "@services/extensions/create.extension";
-import "@services/extensions/select.extension";
-import "@services/extensions/selectById.extension";
-import "@services/extensions/update.extension";
-import "@services/extensions/delete.extension";
+import "@core/loadExtensions";
+// import "@services/extensions/select.extension";
+// import "@services/extensions/selectById.extension";
+// import "@services/extensions/update.extension";
+// import "@services/extensions/delete.extension";
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));

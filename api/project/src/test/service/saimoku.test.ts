@@ -1,7 +1,7 @@
 import { SaimokuCodeConst } from "@common/constant/saimoku";
 import { getContainer } from "@core/container/getContainer";
 import { TYPES } from "@core/container/types";
-import { SaimokuService } from "@services/master/SaimokuService";
+import { MasterService } from "@services/master/MasterService";
 import { ApplicationContext, Env } from "@core/ApplicationContext";
 import { ConnectionProvider } from "@core/connection/ConnectionProvider";
 
@@ -11,12 +11,18 @@ beforeAll(() => {
   ApplicationContext.setEnv(Env.test);
 });
 afterAll(() => {
-  const conn = getContainer().get<ConnectionProvider>(TYPES.SaimokuService);
+  const conn = getContainer().get<ConnectionProvider>(TYPES.ConnectionProvider);
   conn.getConnection().close();
 });
 
-test("service/saimoku", async () => {
-  const service = getContainer().get<SaimokuService>(TYPES.SaimokuService);
+test("service/kamoku/list", async () => {
+  const service = getContainer().get<MasterService>(TYPES.MasterService);
+  const result = await service.selectKamokuList();
+  expect(result).toBeDefined();
+});
+
+test("service/saimoku/detail", async () => {
+  const service = getContainer().get<MasterService>(TYPES.MasterService);
   const result = await service.selectSaimokuDetail({
     saimoku_cd: SaimokuCodeConst.CASH,
   });

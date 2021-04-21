@@ -6,18 +6,38 @@ import { SaimokuSearchRequest } from "@common/model/master/SaimokuSearchRequest"
 import { SaimokuSearchResponse } from "@common/model/master/SaimokuSearchResponse";
 import { selectSaimokuDetail as getSelectSaimokuDetailSql } from "@services/master/selectSaimokuDetail.sql";
 import { NendoMasterEntity } from "@common/model/master/NendoMasterEntity";
-import {
-  EntitySearchCondition,
-  EntitySearchType,
-  Order,
-} from "@common/model/Entity";
+import { EntitySearchCondition, Order } from "@common/model/Entity";
+import { KamokuMasterEntity } from "@common/model/master/KamokuMasterEntity";
+import { SaimokuMasterEntity } from "@common/model/master/SaimokuMasterEntity";
 
-export class SaimokuService extends BaseService {
+export class MasterService extends BaseService {
   public constructor(
     @inject(TYPES.ConnectionProvider)
     public connectionProvider: ConnectionProvider
   ) {
     super();
+  }
+
+  /**
+   * 科目マスタエンティティの一覧を取得
+   * @returns
+   */
+  public async selectKamokuList(): Promise<KamokuMasterEntity[]> {
+    const searchCondition: EntitySearchCondition<KamokuMasterEntity> = {
+      orderBy: [["kamoku_cd", Order.Asc]],
+    };
+    return await this.selectByEntity(KamokuMasterEntity, searchCondition);
+  }
+
+  /**
+   * 細目マスタエンティティの一覧を取得
+   * @returns
+   */
+  public async selectSaimokuList(): Promise<SaimokuMasterEntity[]> {
+    const searchCondition: EntitySearchCondition<SaimokuMasterEntity> = {
+      orderBy: [["saimoku_cd", Order.Asc]],
+    };
+    return await this.selectByEntity(SaimokuMasterEntity, searchCondition);
   }
 
   /**

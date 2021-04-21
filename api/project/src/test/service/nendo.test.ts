@@ -17,7 +17,8 @@ afterAll(() => {
 test("service/neodo", async () => {
   const service = getContainer().get<MasterService>(TYPES.MasterService);
   const result = await service.selectNendoList();
-  expect(result.length).toEqual(2);
-  expect(result[0].nendo).toEqual("2020");
-  expect(result[1].nendo).toEqual("2019");
+  expect(result.length).toEqual(3);
+  expect(result[0].nendo).toEqual("2021");
+  expect(result[1].nendo).toEqual("2020");
+  expect(result[2].nendo).toEqual("2019");
 });

@@ -2,14 +2,21 @@ import * as express from "express";
 import * as bodyParser from "body-parser";
 import { routes, API_METHOD, Route } from "./routes";
 import "@core/loadExtensions";
-// import "@services/extensions/select.extension";
-// import "@services/extensions/selectById.extension";
-// import "@services/extensions/update.extension";
-// import "@services/extensions/delete.extension";
+
+// CORS対応
+const allowCrossDomain = (req: any, res: any, next: any) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+};
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(allowCrossDomain);
 
 const { GET, POST, PUT, DELETE } = API_METHOD;
 for (const route of routes) {

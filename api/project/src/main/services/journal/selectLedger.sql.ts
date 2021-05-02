@@ -5,6 +5,7 @@ export const selectLedger = (condition: LedgerSearchRequest) => (sql: any) => {
 select
   j.nendo,
   j.date,
+  j.another_cd,
   j.karikata_cd,
   j.karikata_value,
   j.kasikata_cd,

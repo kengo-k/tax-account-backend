@@ -31,16 +31,18 @@ export class JournalService extends BaseService {
         const sumL = res.karikata_sum;
         const sumR = res.kasikata_sum;
         if (saimokuDetail.kamoku_bunrui_type === "L") {
-          if ((res.karikata_cd = condition.target_cd)) {
-            res.acc = sumL - sumR;
+          res.acc = sumL - sumR;
+          if (res.karikata_cd === condition.target_cd) {
+            res.kasikata_value = 0;
           } else {
-            res.acc = sumR - sumL;
+            res.karikata_value = 0;
           }
         } else {
-          if ((res.karikata_cd = condition.target_cd)) {
-            res.acc = sumR - sumL;
+          res.acc = sumR - sumL;
+          if (res.karikata_cd === condition.target_cd) {
+            res.karikata_value = 0;
           } else {
-            res.acc = sumL - sumR;
+            res.kasikata_value = 0;
           }
         }
         return res;

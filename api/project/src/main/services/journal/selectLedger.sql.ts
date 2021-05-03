@@ -3,6 +3,7 @@ import { LedgerSearchRequest } from "@common/model/journal/LedgerSearchRequest";
 export const selectLedger = (condition: LedgerSearchRequest) => (sql: any) => {
   return sql`
 select
+  j.id as journal_id,
   j.nendo,
   j.date,
   j.another_cd,
@@ -37,6 +38,7 @@ select
 from
   (
     select
+      id,
       nendo,
       date,
       karikata_cd,

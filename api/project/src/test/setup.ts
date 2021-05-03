@@ -9,9 +9,9 @@ export default async function () {
   // コネクションを生成しておく
   testServer.getConnection();
   // テスト前にDBを再作成する
-  child_process.execSync("./init_test.sh");
+  child_process.execSync("sh ./init_test.sh");
   // 空のDBに初期データを設定する
-  child_process.execSync("./import_test.sh init");
+  child_process.execSync("sh ./import_test.sh init");
   // express起動
   await testServer.start();
 }

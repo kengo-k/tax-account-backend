@@ -1,0 +1,3 @@
+[submodule "api/project/src/main/common"]
+	path = api/project/src/main/common
+	url = git@github.com:kurobanekengo/account-common

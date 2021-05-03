@@ -1,8 +1,21 @@
+# 前準備
+
+## ソースコードのチェックアウト
+
+本アプリケーションは API とフロントエンドの二つに分けて開発している(Git リポジトリ自体が別)ため、共通で使用される部品(モデルクラス等)を共有しています。共有部品は`account-common`リポジトリで管理されていて、API とフロントエンドのプロジェクトは git の submodule 機能を使って`account-common`リポジトリを参照します。
+
+`api/project/src/main/common`ディレクトリに移動し、下記のコマンドを実行します。
+
+```
+$ git submodule init
+$ git submodule update
+```
+
 # 起動方法
 
 ## 1: db.env ファイルの作成
 
-このファイルと同階層に db.env ファイルを作成し Postgresql の環境変数を設定します。db.env ファイルは docker コンテナに Postgresql をインストールする際に使用します。
+このファイル(※README.md)と同階層に db.env ファイルを作成し Postgresql の環境変数を設定します。db.env ファイルは docker コンテナに Postgresql をインストールする際に使用します。
 
 db.env ファイルの内容は以下のとおりです。
 

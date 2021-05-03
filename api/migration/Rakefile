@@ -2,7 +2,7 @@ require 'erb'
 require 'yaml'
 require 'active_record'
 
-$all = YAML::load(File.open('../database.yml'))
+$all = YAML::load(File.open('../config/database.yml'))
 $common = $all['common']
 
 DEFAULT_ENV = 'development'

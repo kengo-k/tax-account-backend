@@ -18,6 +18,7 @@ services:
     volumes:
       - "$PWD/api/migration:/opt/migration"
       - "$PWD/api/project:/opt/project"
+      - "$PWD/api/config:/opt/config"
     ports:
       - 8080:8080
     networks:

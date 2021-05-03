@@ -1,6 +1,5 @@
 FROM ubuntu:20.04
 ENV DEBIAN_FRONTEND=noninteractive
-COPY ./database.yml /opt
 RUN \
   apt-get update \
     && apt-get -y install postgresql-client \

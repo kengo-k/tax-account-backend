@@ -20,7 +20,7 @@ export class ConnectionProvider {
   }
 
   private createConnection(): ConnectionWrapper {
-    const dbConfigPath = `${ApplicationContext.apiRootDir}/database.yml`;
+    const dbConfigPath = `${ApplicationContext.apiRootDir}/config/database.yml`;
     const dbConfigValue = fs.readFileSync(dbConfigPath, "utf8");
     const dbConfig: any = yaml.load(dbConfigValue);
     const env = ApplicationContext.env;

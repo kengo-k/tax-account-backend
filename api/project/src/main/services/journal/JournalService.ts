@@ -6,6 +6,13 @@ import { LedgerSearchRequest } from "@common/model/journal/LedgerSearchRequest";
 import { LedgerSearchResponse } from "@common/model/journal/LedgerSearchResponse";
 import { selectLedger as getSelectLedgerSql } from "./selectLedger.sql";
 import { MasterService } from "@services/master/MasterService";
+import { LedgerCreateRequest } from "@common/model/journal/LedgerCreateRequest";
+import { LedgerUpdateRequest } from "@common/model/journal/LedgerUpdateRequest";
+import {
+  IJournalEntity,
+  JournalEntity,
+} from "@common/model/journal/JournalEntity";
+import { SaimokuSearchResponse } from "@common/model/master/SaimokuSearchResponse";
 
 @injectable()
 export class JournalService extends BaseService {
@@ -49,4 +56,72 @@ export class JournalService extends BaseService {
       }
     );
   }
+
+  public async createLedger(condition: LedgerCreateRequest) {
+    const saimokuDetail = (
+      await this.masterService.selectSaimokuDetail({
+        saimoku_cd: condition.ledgerCd,
+      })
+    )[0];
+    const entity = toJournalEntity(condition, saimokuDetail);
+    return await this.create<IJournalEntity>(entity);
+  }
+
+  public async updateLedger(condition: LedgerUpdateRequest) {
+    const saimokuDetail = (
+      await this.masterService.selectSaimokuDetail({
+        saimoku_cd: condition.ledgerCd,
+      })
+    )[0];
+    const entity = toJournalEntity(condition, saimokuDetail);
+    return await this.update<IJournalEntity>(entity);
+  }
 }
+
+const toJournalEntity = (
+  condition: LedgerCreateRequest | LedgerUpdateRequest,
+  saimokuDetail: SaimokuSearchResponse
+) => {
+  let value: number;
+  if (condition.karikataValue == null && condition.kasikataValue == null) {
+    throw new Error();
+  }
+  if (condition.karikataValue != null && condition.kasikataValue != null) {
+    throw new Error();
+  }
+  if (condition.karikataValue != null) {
+    value = condition.karikataValue;
+  } else {
+    value = condition.kasikataValue as number;
+  }
+  let karikata_cd: string;
+  let kasikata_cd: string;
+  if (saimokuDetail.kamoku_bunrui_type === "L") {
+    if (condition.karikataValue != null) {
+      karikata_cd = condition.ledgerCd;
+      kasikata_cd = condition.anotherCd;
+    } else {
+      karikata_cd = condition.anotherCd;
+      kasikata_cd = condition.ledgerCd;
+    }
+  } else {
+    if (condition.kasikataValue != null) {
+      karikata_cd = condition.anotherCd;
+      kasikata_cd = condition.ledgerCd;
+    } else {
+      karikata_cd = condition.ledgerCd;
+      kasikata_cd = condition.anotherCd;
+    }
+  }
+  return new JournalEntity({
+    id: condition.id,
+    nendo: condition.nendo,
+    date: condition.date,
+    karikata_cd,
+    karikata_value: value,
+    kasikata_cd,
+    kasikata_value: value,
+    note: condition.note,
+    checked: "0",
+  });
+};

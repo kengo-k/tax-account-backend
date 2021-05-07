@@ -64,13 +64,10 @@ test("ledger/crud", async () => {
 
   const result4 = await service.updateLedger({
     id: result3?.id as number,
-    nendo: DefaultNendo,
-    date: undefined,
     ledger_cd: SC.UNPAID_SALARY,
     other_cd: SC.CASH,
     karikata_value: null,
     kasikata_value: 200,
-    note: undefined,
   });
   expect(result4?.id).toBeDefined();
   expect(result4?.id).toEqual(result3?.id);

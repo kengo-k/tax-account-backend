@@ -47,25 +47,20 @@ const getCreateLedger = (client: AxiosInstance) => (nendo: string) => async (
   });
 };
 
-const getUpdateLedger = (client: AxiosInstance) => (nendo: string) => async (
+const getUpdateLedger = (client: AxiosInstance) => async (
   id: number,
-  date: string | undefined,
   ledger_cd: string,
   other_cd: string,
   karikata_value: number | null,
-  kasikata_value: number | null,
-  note: string | undefined
+  kasikata_value: number | null
 ) => {
   const path = `${ledgerApiPath}`;
   return await client.put(path, {
     id,
-    nendo,
-    date,
     ledger_cd,
     other_cd,
     karikata_value,
     kasikata_value,
-    note,
   });
 };
 
@@ -145,7 +140,7 @@ test("papi/init", async () => {
 test("ledger/create-update", async () => {
   const client = testServer.getClient();
   const insert = getCreateLedger(client)(LedgerNendo);
-  const update = getUpdateLedger(client)(LedgerNendo);
+  const update = getUpdateLedger(client);
 
   const insertResult1 = await insert(
     getLedgerDate(30),
@@ -153,22 +148,21 @@ test("ledger/create-update", async () => {
     CdSet.SALES,
     650000,
     null,
-    undefined
+    "note1"
   );
   expect(insertResult1.data.body).toBeTruthy();
   expect(insertResult1.data.body.karikata_cd).toEqual(CdSet.URIKAKE);
   expect(insertResult1.data.body.kasikata_cd).toEqual(CdSet.SALES);
   expect(insertResult1.data.body.kasikata_value).toEqual(650000);
   expect(insertResult1.data.body.kasikata_value).toEqual(650000);
+  expect(insertResult1.data.body.note).toEqual("note1");
 
   const updateResult1 = await update(
     insertResult1.data.body.id,
-    undefined,
     CdSet.URIKAKE,
     CdSet.SALES,
-    650000,
-    null,
-    "note1"
+    700000,
+    null
   );
 
   expect(updateResult1.data.body).toBeTruthy();
@@ -176,43 +170,23 @@ test("ledger/create-update", async () => {
   expect(updateResult1.data.body.date).toEqual(getLedgerDate(30));
   expect(updateResult1.data.body.karikata_cd).toEqual(CdSet.URIKAKE);
   expect(updateResult1.data.body.kasikata_cd).toEqual(CdSet.SALES);
-  expect(updateResult1.data.body.kasikata_value).toEqual(650000);
-  expect(updateResult1.data.body.kasikata_value).toEqual(650000);
+  expect(updateResult1.data.body.kasikata_value).toEqual(700000);
+  expect(updateResult1.data.body.kasikata_value).toEqual(700000);
   expect(updateResult1.data.body.note).toEqual("note1");
 
   const updateResult2 = await update(
     insertResult1.data.body.id,
-    undefined,
     CdSet.URIKAKE,
     CdSet.SALES,
-    700000,
     null,
-    "note1"
+    300000
   );
 
   expect(updateResult2.data.body).toBeTruthy();
   expect(updateResult2.data.body.date).toEqual(getLedgerDate(30));
-  expect(updateResult2.data.body.karikata_cd).toEqual(CdSet.URIKAKE);
-  expect(updateResult2.data.body.kasikata_cd).toEqual(CdSet.SALES);
-  expect(updateResult2.data.body.kasikata_value).toEqual(700000);
-  expect(updateResult2.data.body.kasikata_value).toEqual(700000);
+  expect(updateResult2.data.body.karikata_cd).toEqual(CdSet.SALES);
+  expect(updateResult2.data.body.kasikata_cd).toEqual(CdSet.URIKAKE);
+  expect(updateResult2.data.body.kasikata_value).toEqual(300000);
+  expect(updateResult2.data.body.kasikata_value).toEqual(300000);
   expect(updateResult2.data.body.note).toEqual("note1");
-
-  const updateResult3 = await update(
-    insertResult1.data.body.id,
-    getLedgerDate(31),
-    CdSet.URIKAKE,
-    CdSet.SALES,
-    null,
-    300000,
-    "note2"
-  );
-
-  expect(updateResult3.data.body).toBeTruthy();
-  expect(updateResult3.data.body.date).toEqual(getLedgerDate(31));
-  expect(updateResult3.data.body.karikata_cd).toEqual(CdSet.SALES);
-  expect(updateResult3.data.body.kasikata_cd).toEqual(CdSet.URIKAKE);
-  expect(updateResult3.data.body.kasikata_value).toEqual(300000);
-  expect(updateResult3.data.body.kasikata_value).toEqual(300000);
-  expect(updateResult3.data.body.note).toEqual("note2");
 });

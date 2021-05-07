@@ -1,3 +1,4 @@
+import * as express from "express";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@core/container/types";
 import { MasterService } from "@services/master/MasterService";
@@ -19,7 +20,7 @@ export class PresentationController extends BaseController {
     super();
   }
 
-  public selectInit(req: any, res: any) {
+  public selectInit(req: express.Request<any>, res: express.Response<any>) {
     this.execute(req, res, async () => {
       const [param] = InitSearchRequest.isValid(req.query);
       if (param == null) {

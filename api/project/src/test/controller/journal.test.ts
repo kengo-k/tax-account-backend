@@ -1,16 +1,18 @@
 import { testServer } from "@test/testServer";
+import { DefaultNendo, getDefaultDate } from "@test/testConstant";
+import { SaimokuCodeConst as SC } from "@common/constant/saimoku";
 
-test("journals logic", async () => {
+test("journal/crud", async () => {
   const client = testServer.getClient();
   const apiPath = "/api/v1/journal";
 
   // error test: insert without date
   const insertResult = await client.post(apiPath, {
-    nendo: "2020",
+    nendo: DefaultNendo,
     //date: "20210301",
-    karikata_cd: "AAAAA",
+    karikata_cd: SC.CASH,
     karikata_value: 100,
-    kasikata_cd: "BBBBB",
+    kasikata_cd: SC.SALES,
     kasikata_value: 100,
     note: "note1",
     checked: "0",
@@ -21,11 +23,11 @@ test("journals logic", async () => {
   // error test :insert with specified id
   const insertResult2 = await client.post(apiPath, {
     id: 999,
-    nendo: "2020",
-    date: "20210301",
-    karikata_cd: "AAAAA",
+    nendo: DefaultNendo,
+    date: getDefaultDate(),
+    karikata_cd: SC.CASH,
     karikata_value: 100,
-    kasikata_cd: "BBBBB",
+    kasikata_cd: SC.SALES,
     kasikata_value: 100,
     note: "note1",
     checked: "0",
@@ -40,7 +42,7 @@ test("journals logic", async () => {
 
   // error test: update with not exist id
   const updateResult = await client.put(`${apiPath}/${-1}`, {
-    date: "20210301",
+    date: getDefaultDate(),
   });
   expect(updateResult.data.success).toBeFalsy();
   expect(updateResult.status).toEqual(404);

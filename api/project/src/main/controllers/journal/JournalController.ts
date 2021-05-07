@@ -101,7 +101,6 @@ export class JournalController extends BaseController {
       Object.assign(params, req.body);
       const [param, error] = LedgerCreateRequest.isValid(params);
       if (param == null) {
-        console.error(error);
         // prettier-ignore
         throw new RequestError(
           `invalid request: ${JSON.stringify(params)}`
@@ -119,7 +118,6 @@ export class JournalController extends BaseController {
       Object.assign(params, req.body);
       const [param, error] = LedgerUpdateRequest.isValid(params);
       if (param == null) {
-        console.error(error);
         // prettier-ignore
         throw new RequestError(
           `invalid request: ${JSON.stringify(params)}`

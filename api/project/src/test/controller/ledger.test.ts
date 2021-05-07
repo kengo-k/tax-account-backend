@@ -29,20 +29,20 @@ const getCreateJournal = (client: AxiosInstance) => (nendo: string) => async (
 
 const getCreateLedger = (client: AxiosInstance) => (nendo: string) => async (
   date: string,
-  ledgerCd: string,
-  anotherCd: string,
-  karikataValue: number | null,
-  kasikataValue: number | null,
+  ledger_cd: string,
+  other_cd: string,
+  karikata_value: number | null,
+  kasikata_value: number | null,
   note: string | undefined
 ) => {
   const path = `${ledgerApiPath}`;
   return await client.post(path, {
     nendo,
     date,
-    ledgerCd,
-    anotherCd,
-    karikataValue,
-    kasikataValue,
+    ledger_cd,
+    other_cd,
+    karikata_value,
+    kasikata_value,
     note,
   });
 };
@@ -50,10 +50,10 @@ const getCreateLedger = (client: AxiosInstance) => (nendo: string) => async (
 const getUpdateLedger = (client: AxiosInstance) => (nendo: string) => async (
   id: number,
   date: string | undefined,
-  ledgerCd: string,
-  anotherCd: string,
-  karikataValue: number | null,
-  kasikataValue: number | null,
+  ledger_cd: string,
+  other_cd: string,
+  karikata_value: number | null,
+  kasikata_value: number | null,
   note: string | undefined
 ) => {
   const path = `${ledgerApiPath}`;
@@ -61,10 +61,10 @@ const getUpdateLedger = (client: AxiosInstance) => (nendo: string) => async (
     id,
     nendo,
     date,
-    ledgerCd,
-    anotherCd,
-    karikataValue,
-    kasikataValue,
+    ledger_cd,
+    other_cd,
+    karikata_value,
+    kasikata_value,
     note,
   });
 };

@@ -60,7 +60,7 @@ export class JournalService extends BaseService {
   public async createLedger(condition: LedgerCreateRequest) {
     const saimokuDetail = (
       await this.masterService.selectSaimokuDetail({
-        saimoku_cd: condition.ledgerCd,
+        saimoku_cd: condition.ledger_cd,
       })
     )[0];
     const entity = toJournalEntity(condition, saimokuDetail);
@@ -70,7 +70,7 @@ export class JournalService extends BaseService {
   public async updateLedger(condition: LedgerUpdateRequest) {
     const saimokuDetail = (
       await this.masterService.selectSaimokuDetail({
-        saimoku_cd: condition.ledgerCd,
+        saimoku_cd: condition.ledger_cd,
       })
     )[0];
     const entity = toJournalEntity(condition, saimokuDetail);
@@ -84,35 +84,35 @@ const toJournalEntity = (
 ) => {
   let value: number;
   // 金額が両方nullはありえないのでエラー
-  if (condition.karikataValue === null && condition.kasikataValue === null) {
+  if (condition.karikata_value === null && condition.kasikata_value === null) {
     throw new Error();
   }
   // 金額が両方設定されることはありえないのでエラー
-  if (condition.karikataValue != null && condition.kasikataValue != null) {
+  if (condition.karikata_value != null && condition.kasikata_value != null) {
     throw new Error();
   }
-  if (condition.karikataValue != null) {
-    value = condition.karikataValue;
+  if (condition.karikata_value != null) {
+    value = condition.karikata_value;
   } else {
-    value = condition.kasikataValue!;
+    value = condition.kasikata_value!;
   }
   let karikata_cd: string;
   let kasikata_cd: string;
   if (saimokuDetail.kamoku_bunrui_type === "L") {
-    if (condition.karikataValue != null) {
-      karikata_cd = condition.ledgerCd;
-      kasikata_cd = condition.anotherCd;
+    if (condition.karikata_value != null) {
+      karikata_cd = condition.ledger_cd;
+      kasikata_cd = condition.other_cd;
     } else {
-      karikata_cd = condition.anotherCd;
-      kasikata_cd = condition.ledgerCd;
+      karikata_cd = condition.other_cd;
+      kasikata_cd = condition.ledger_cd;
     }
   } else {
-    if (condition.kasikataValue != null) {
-      karikata_cd = condition.anotherCd;
-      kasikata_cd = condition.ledgerCd;
+    if (condition.kasikata_value != null) {
+      karikata_cd = condition.other_cd;
+      kasikata_cd = condition.ledger_cd;
     } else {
-      karikata_cd = condition.ledgerCd;
-      kasikata_cd = condition.anotherCd;
+      karikata_cd = condition.ledger_cd;
+      kasikata_cd = condition.other_cd;
     }
   }
   const entityValue: Partial<IJournalEntity> = {

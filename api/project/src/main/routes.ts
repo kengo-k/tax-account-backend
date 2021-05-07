@@ -50,7 +50,7 @@ function buildRoute() {
   addRoute(DELETE, "/api/v1/journal/:id", container.get<JournalController>(TYPES.JournalController), (controller) => controller.delete);
   addRoute(GET, "/api/v1/ledger/:nendo/:target_cd", container.get<JournalController>(TYPES.JournalController), (controller) => controller.selectLedger);
   addRoute(POST, "/api/v1/ledger", container.get<JournalController>(TYPES.JournalController), (controller) => controller.createLedger);
-  addRoute(PUT, "/api/v1/ledger", container.get<JournalController>(TYPES.JournalController), (controller) => controller.updateLedger);
+  addRoute(PUT, "/api/v1/ledger/:id", container.get<JournalController>(TYPES.JournalController), (controller) => controller.updateLedger);
 
   // presentation api
   addRoute(GET, "/papi/v1/init", container.get<PresentationController>(TYPES.PresentationController), (controller) => controller.selectInit);

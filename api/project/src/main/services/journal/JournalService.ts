@@ -124,15 +124,16 @@ const toJournalEntity = (
   };
   if ("id" in condition) {
     entityValue.id = condition.id;
-  }
-  if (condition.nendo != null) {
-    entityValue.nendo = condition.nendo;
-  }
-  if (condition.date != null) {
-    entityValue.date = condition.date;
-  }
-  if (condition.note != null) {
-    entityValue.note = condition.note;
+  } else {
+    if (condition.nendo != null) {
+      entityValue.nendo = condition.nendo;
+    }
+    if (condition.date != null) {
+      entityValue.date = condition.date;
+    }
+    if (condition.note != null) {
+      entityValue.note = condition.note;
+    }
   }
   return new JournalEntity(entityValue);
 };

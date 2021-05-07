@@ -24,7 +24,7 @@ test("ledger/crud", async () => {
     ledgerCd: SC.CASH,
     anotherCd: SC.MISC,
     karikataValue: 100,
-    kasikataValue: undefined,
+    kasikataValue: null,
     note: "",
   });
   expect(result1?.nendo).toEqual(DefaultNendo);
@@ -39,7 +39,7 @@ test("ledger/crud", async () => {
     date: getDefaultDate(),
     ledgerCd: SC.UNPAID_SALARY,
     anotherCd: SC.MISC,
-    karikataValue: undefined,
+    karikataValue: null,
     kasikataValue: 100,
     note: "",
   });
@@ -54,7 +54,7 @@ test("ledger/crud", async () => {
     ledgerCd: SC.UNPAID_SALARY,
     anotherCd: SC.CASH,
     karikataValue: 100,
-    kasikataValue: undefined,
+    kasikataValue: null,
     note: "",
   });
   expect(result3?.karikata_cd).toEqual(SC.UNPAID_SALARY);
@@ -64,10 +64,13 @@ test("ledger/crud", async () => {
 
   const result4 = await service.updateLedger({
     id: result3?.id as number,
+    nendo: DefaultNendo,
+    date: undefined,
     ledgerCd: SC.UNPAID_SALARY,
     anotherCd: SC.CASH,
-    karikataValue: undefined,
+    karikataValue: null,
     kasikataValue: 200,
+    note: undefined,
   });
   expect(result4?.id).toBeDefined();
   expect(result4?.id).toEqual(result3?.id);

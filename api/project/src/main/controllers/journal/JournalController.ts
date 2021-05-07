@@ -115,13 +115,13 @@ export class JournalController extends BaseController {
   public updateLedger(req: express.Request<any>, res: express.Response<any>) {
     this.execute(req, res, async () => {
       const params = {};
+      const id = this.checkId(req);
+      Object.assign(params, { id });
       Object.assign(params, req.body);
       const [param, error] = LedgerUpdateRequest.isValid(params);
       if (param == null) {
         // prettier-ignore
-        throw new RequestError(
-          `invalid request: ${JSON.stringify(params)}`
-        );
+        throw new RequestError(`invalid request: ${JSON.stringify(params)}`);
       }
       const request = new LedgerUpdateRequest(param);
       const result = await this.journalService.updateLedger(request);

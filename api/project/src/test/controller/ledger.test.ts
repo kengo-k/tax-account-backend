@@ -54,9 +54,8 @@ const getUpdateLedger = (client: AxiosInstance) => async (
   karikata_value: number | null,
   kasikata_value: number | null
 ) => {
-  const path = `${ledgerApiPath}`;
+  const path = `${ledgerApiPath}/${id}`;
   return await client.put(path, {
-    id,
     ledger_cd,
     other_cd,
     karikata_value,

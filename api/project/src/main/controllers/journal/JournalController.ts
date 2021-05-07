@@ -98,7 +98,6 @@ export class JournalController extends BaseController {
   public createLedger(req: express.Request<any>, res: express.Response<any>) {
     this.execute(req, res, async () => {
       const params = {};
-      Object.assign(params, req.params);
       Object.assign(params, req.body);
       const [param, error] = LedgerCreateRequest.isValid(params);
       if (param == null) {
@@ -117,7 +116,6 @@ export class JournalController extends BaseController {
   public updateLedger(req: express.Request<any>, res: express.Response<any>) {
     this.execute(req, res, async () => {
       const params = {};
-      Object.assign(params, req.params);
       Object.assign(params, req.body);
       const [param, error] = LedgerUpdateRequest.isValid(params);
       if (param == null) {

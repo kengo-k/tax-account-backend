@@ -35,9 +35,11 @@ const getCreateLedger = (client: AxiosInstance) => (nendo: string) => async (
   kasikataValue: number | null,
   note: string | undefined
 ) => {
-  const path = `${ledgerApiPath}/${nendo}/${ledgerCd}`;
+  const path = `${ledgerApiPath}`;
   return await client.post(path, {
+    nendo,
     date,
+    ledgerCd,
     anotherCd,
     karikataValue,
     kasikataValue,
@@ -54,10 +56,12 @@ const getUpdateLedger = (client: AxiosInstance) => (nendo: string) => async (
   kasikataValue: number | null,
   note: string | undefined
 ) => {
-  const path = `${ledgerApiPath}/${nendo}/${ledgerCd}`;
+  const path = `${ledgerApiPath}`;
   return await client.put(path, {
     id,
+    nendo,
     date,
+    ledgerCd,
     anotherCd,
     karikataValue,
     kasikataValue,

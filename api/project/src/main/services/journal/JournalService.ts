@@ -83,16 +83,18 @@ const toJournalEntity = (
   saimokuDetail: SaimokuSearchResponse
 ) => {
   let value: number;
-  if (condition.karikataValue == null && condition.kasikataValue == null) {
+  // 金額が両方nullはありえないのでエラー
+  if (condition.karikataValue === null && condition.kasikataValue === null) {
     throw new Error();
   }
+  // 金額が両方設定されることはありえないのでエラー
   if (condition.karikataValue != null && condition.kasikataValue != null) {
     throw new Error();
   }
   if (condition.karikataValue != null) {
     value = condition.karikataValue;
   } else {
-    value = condition.kasikataValue as number;
+    value = condition.kasikataValue!;
   }
   let karikata_cd: string;
   let kasikata_cd: string;
@@ -113,15 +115,24 @@ const toJournalEntity = (
       kasikata_cd = condition.anotherCd;
     }
   }
-  return new JournalEntity({
-    id: condition.id,
-    nendo: condition.nendo,
-    date: condition.date,
+  const entityValue: Partial<IJournalEntity> = {
     karikata_cd,
     karikata_value: value,
     kasikata_cd,
     kasikata_value: value,
-    note: condition.note,
     checked: "0",
-  });
+  };
+  if ("id" in condition) {
+    entityValue.id = condition.id;
+  }
+  if (condition.nendo != null) {
+    entityValue.nendo = condition.nendo;
+  }
+  if (condition.date != null) {
+    entityValue.date = condition.date;
+  }
+  if (condition.note != null) {
+    entityValue.note = condition.note;
+  }
+  return new JournalEntity(entityValue);
 };

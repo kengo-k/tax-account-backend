@@ -1,4 +1,6 @@
 import { testServer } from "@test/testServer";
+import { DefaultNendo, getDefaultDate } from "@test/testConstant";
+import { SaimokuCodeConst as SC } from "@common/constant/saimoku";
 
 test("basic CRUD functions", async () => {
   const client = testServer.getClient();
@@ -6,11 +8,11 @@ test("basic CRUD functions", async () => {
 
   // insert
   const insertResult = await client.post(apiPath, {
-    nendo: "2020",
-    date: "20210301",
-    karikata_cd: "AAAAA",
+    nendo: DefaultNendo,
+    date: getDefaultDate(),
+    karikata_cd: SC.CASH,
     karikata_value: 100,
-    kasikata_cd: "BBBBB",
+    kasikata_cd: SC.SALES,
     kasikata_value: 100,
     note: "note1",
     checked: "0",
@@ -26,9 +28,9 @@ test("basic CRUD functions", async () => {
   // update
   // prettier-ignore
   const updateResult = await client.put(`${apiPath}/${insertResult.data.body.id}`, {
-    date: "20210302",
+    date: getDefaultDate(1),
   });
-  expect(updateResult.data.body.date).toEqual("20210302");
+  expect(updateResult.data.body.date).toEqual(getDefaultDate(1));
   expect(updateResult.data.body.note).toEqual("note1");
 
   // update with null

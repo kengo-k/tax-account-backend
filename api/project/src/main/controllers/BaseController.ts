@@ -1,3 +1,4 @@
+import * as express from "express";
 import { injectable } from "inversify";
 import { ApplicationError, RequestError } from "@common/error/ApplicationError";
 import { SystemError } from "@common/error/SystemError";
@@ -5,7 +6,11 @@ import { ErrorResponse, SuccessResponse } from "@common/model/Response";
 
 @injectable()
 export class BaseController {
-  public async execute(req: any, res: any, run: () => void) {
+  public async execute(
+    req: express.Request<any>,
+    res: express.Response<any>,
+    run: () => void
+  ) {
     try {
       const result = await run();
       const successResponse: SuccessResponse = {
@@ -25,7 +30,10 @@ export class BaseController {
     }
   }
 
-  public setErrorResponse(res: any, error: ApplicationError | SystemError) {
+  public setErrorResponse(
+    res: express.Response<any>,
+    error: ApplicationError | SystemError
+  ) {
     const response: ErrorResponse = {
       success: false,
       error,
@@ -34,7 +42,7 @@ export class BaseController {
     res.send(JSON.stringify(response));
   }
 
-  public checkId(req: any) {
+  public checkId(req: express.Request<{ id: number }>) {
     const id = req.params["id"] - 0;
     if (isNaN(id)) {
       throw new RequestError(`invalid id format: ${req.params["id"]}`);

@@ -4,7 +4,11 @@ import { routes, API_METHOD, Route } from "./routes";
 import "@core/loadExtensions";
 
 // CORS対応
-const allowCrossDomain = (req: any, res: any, next: any) => {
+const allowCrossDomain = (
+  req: express.Request<any>,
+  res: express.Response<any>,
+  next: () => void
+) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
   res.header(
@@ -37,7 +41,7 @@ for (const route of routes) {
   }
 }
 
-const run = (route: Route<any>) => (req: any, res: any) => {
+const run = (route: Route) => (req: express.Request, res: express.Response) => {
   route.run.bind(route.controller)(req, res);
 };
 

@@ -48,7 +48,7 @@ function buildRoute() {
   addRoute(POST, "/api/v1/journal", container.get<JournalController>(TYPES.JournalController), (controller) => controller.create);
   addRoute(PUT, "/api/v1/journal/:id", container.get<JournalController>(TYPES.JournalController), (controller) => controller.update);
   addRoute(DELETE, "/api/v1/journal/:id", container.get<JournalController>(TYPES.JournalController), (controller) => controller.delete);
-  addRoute(GET, "/api/v1/ledger/:nendo/:target_cd", container.get<JournalController>(TYPES.JournalController), (controller) => controller.selectLedger);
+  addRoute(GET, "/api/v1/ledger/:nendo/:ledger_cd", container.get<JournalController>(TYPES.JournalController), (controller) => controller.selectLedger);
   addRoute(POST, "/api/v1/ledger", container.get<JournalController>(TYPES.JournalController), (controller) => controller.createLedger);
   addRoute(PUT, "/api/v1/ledger/:id", container.get<JournalController>(TYPES.JournalController), (controller) => controller.updateLedger);
 

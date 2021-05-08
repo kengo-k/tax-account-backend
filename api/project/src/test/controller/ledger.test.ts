@@ -5,6 +5,7 @@ import {
   getLedgerDate,
   LedgerCdSet1 as CdSet,
 } from "@test/testConstant";
+import { InitSearchResponse } from "@common/model/presentation/InitSearchResponse";
 
 const journalApiPath = "/api/v1/journal";
 const ledgerApiPath = "/api/v1/ledger";
@@ -65,9 +66,9 @@ const getUpdateLedger = (client: AxiosInstance) => async (
 
 const createSelect = (client: AxiosInstance) => async (
   nendo: string,
-  target_cd: string
+  ledger_cd: string
 ) => {
-  const path = `${ledgerApiPath}/${nendo}/${target_cd}`;
+  const path = `${ledgerApiPath}/${nendo}/${ledger_cd}`;
   return await client.get(path);
 };
 
@@ -103,37 +104,54 @@ test("ledger/select", async () => {
   expect(result4.data.body[0].acc).toEqual(1100000);
 });
 
+const getSelectInit = (client: AxiosInstance) => async (
+  nendo: string | undefined,
+  ledger_cd: string | undefined
+) => {
+  const querys = [];
+  if (nendo != null) {
+    querys.push(`nendo=${nendo}`);
+  }
+  if (ledger_cd != null) {
+    querys.push(`ledger_cd=${ledger_cd}`);
+  }
+  return await client.get<{ body: InitSearchResponse }>(
+    `${initApiPath}${querys.length === 0 ? "" : `?${querys.join("&")}`}`
+  );
+};
+
 test("papi/init", async () => {
   const client = testServer.getClient();
-  const selectResult = await client.get(`${initApiPath}`);
+  const select = getSelectInit(client);
+  const selectResult = await select(undefined, undefined);
   expect(selectResult.data.body).toBeTruthy();
-  expect(selectResult.data.body.nendoList.length).toBeGreaterThan(1);
-  expect(selectResult.data.body.kamokuMasterList.length).toBeGreaterThan(1);
-  expect(selectResult.data.body.saimokuMasterList.length).toBeGreaterThan(1);
-  expect(selectResult.data.body.ledgerList.length).toEqual(0);
+  expect(selectResult.data.body.nendo_list.length).toBeGreaterThan(1);
+  expect(selectResult.data.body.kamoku_list.length).toBeGreaterThan(1);
+  expect(selectResult.data.body.saimoku_list.length).toBeGreaterThan(1);
+  expect(selectResult.data.body.ledger_list.length).toEqual(0);
 
-  const selectResult2 = await client.get(`${initApiPath}?nendo=${LedgerNendo}`);
+  const selectResult2 = await select(LedgerNendo, undefined);
   expect(selectResult2.data.body).toBeTruthy();
-  expect(selectResult2.data.body.nendoList.length).toBeGreaterThan(1);
-  expect(selectResult2.data.body.kamokuMasterList.length).toBeGreaterThan(1);
-  expect(selectResult2.data.body.saimokuMasterList.length).toBeGreaterThan(1);
-  expect(selectResult2.data.body.ledgerList.length).toEqual(0);
+  expect(selectResult2.data.body.nendo_list.length).toBeGreaterThan(1);
+  expect(selectResult2.data.body.kamoku_list.length).toBeGreaterThan(1);
+  expect(selectResult2.data.body.saimoku_list.length).toBeGreaterThan(1);
+  expect(selectResult2.data.body.ledger_list.length).toEqual(0);
 
   // prettier-ignore
-  const selectResult3 = await client.get(`${initApiPath}?nendo=${LedgerNendo}&target_cd=${CdSet.URIKAKE}`);
+  const selectResult3 = await select(LedgerNendo, CdSet.URIKAKE);
   expect(selectResult3.data.body).toBeTruthy();
-  expect(selectResult3.data.body.nendoList.length).toBeGreaterThan(1);
-  expect(selectResult3.data.body.kamokuMasterList.length).toBeGreaterThan(1);
-  expect(selectResult3.data.body.saimokuMasterList.length).toBeGreaterThan(1);
-  expect(selectResult3.data.body.ledgerList.length).toBeGreaterThan(0);
+  expect(selectResult3.data.body.nendo_list.length).toBeGreaterThan(1);
+  expect(selectResult3.data.body.kamoku_list.length).toBeGreaterThan(1);
+  expect(selectResult3.data.body.saimoku_list.length).toBeGreaterThan(1);
+  expect(selectResult3.data.body.ledger_list.length).toBeGreaterThan(0);
 
   // prettier-ignore
-  const selectResult4 = await client.get(`${initApiPath}?target_cd=${CdSet.URIKAKE}`);
+  const selectResult4 = await select(undefined, CdSet.URIKAKE);
   expect(selectResult4.data.body).toBeTruthy();
-  expect(selectResult4.data.body.nendoList.length).toBeGreaterThan(1);
-  expect(selectResult4.data.body.kamokuMasterList.length).toBeGreaterThan(1);
-  expect(selectResult4.data.body.saimokuMasterList.length).toBeGreaterThan(1);
-  expect(selectResult4.data.body.ledgerList.length).toBeGreaterThan(0);
+  expect(selectResult4.data.body.nendo_list.length).toBeGreaterThan(1);
+  expect(selectResult4.data.body.kamoku_list.length).toBeGreaterThan(1);
+  expect(selectResult4.data.body.saimoku_list.length).toBeGreaterThan(1);
+  expect(selectResult4.data.body.ledger_list.length).toBeGreaterThan(0);
 });
 
 test("ledger/create-update", async () => {

@@ -44,6 +44,7 @@ const { GET, POST, PUT, DELETE } = API_METHOD;
 function buildRoute() {
   const container = getContainer();
   // core api
+  addRoute(GET, "/api/v1/journals/:nendo", container.get<JournalController>(TYPES.JournalController), (controller) => controller.selectJournals);
   addRoute(GET, "/api/v1/journal/:id", container.get<JournalController>(TYPES.JournalController), (controller) => controller.selectById);
   addRoute(POST, "/api/v1/journal", container.get<JournalController>(TYPES.JournalController), (controller) => controller.create);
   addRoute(PUT, "/api/v1/journal/:id", container.get<JournalController>(TYPES.JournalController), (controller) => controller.update);

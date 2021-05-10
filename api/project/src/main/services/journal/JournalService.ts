@@ -13,6 +13,8 @@ import {
   JournalEntity,
 } from "@common/model/journal/JournalEntity";
 import { SaimokuSearchResponse } from "@common/model/master/SaimokuSearchResponse";
+import { EntitySearchType, Order } from "@common/model/Entity";
+import { JournalSearchRequest } from "@common/model/journal/JournalSearchRequest";
 
 @injectable()
 export class JournalService extends BaseService {
@@ -23,6 +25,16 @@ export class JournalService extends BaseService {
     public masterService: MasterService
   ) {
     super();
+  }
+
+  public async selectJournals(condition: JournalSearchRequest) {
+    return await this.selectByEntity(JournalEntity, {
+      nendo: {
+        searchType: EntitySearchType.StringEqual,
+        value: condition.nendo,
+      },
+      orderBy: [["created_at", Order.Desc]],
+    });
   }
 
   public async selectLedger(condition: LedgerSearchRequest) {

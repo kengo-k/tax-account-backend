@@ -8,6 +8,7 @@ import { BaseController } from "@controllers/BaseController";
 import { LedgerSearchRequest } from "@common/model/journal/LedgerSearchRequest";
 import { LedgerCreateRequest } from "@common/model/journal/LedgerCreateRequest";
 import { LedgerUpdateRequest } from "@common/model/journal/LedgerUpdateRequest";
+import { JournalSearchRequest } from "@common/model/journal/JournalSearchRequest";
 
 @injectable()
 export class JournalController extends BaseController {
@@ -76,6 +77,21 @@ export class JournalController extends BaseController {
         // prettier-ignore
         throw new NotFoundError(`invalid result: delete for JournalEntity(${id}) was not found`);
       }
+      return result;
+    });
+  }
+
+  public selectJournals(req: express.Request<any>, res: express.Response<any>) {
+    this.execute(req, res, async () => {
+      const [param] = JournalSearchRequest.isValid(req.params);
+      if (param == null) {
+        // prettier-ignore
+        throw new RequestError(
+          `invalid request: ${JSON.stringify(req.params)}`
+        );
+      }
+      const request = new JournalSearchRequest(param);
+      const result = await this.journalService.selectJournals(request);
       return result;
     });
   }

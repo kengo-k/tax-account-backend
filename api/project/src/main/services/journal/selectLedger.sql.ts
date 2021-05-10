@@ -14,7 +14,7 @@ select
   sum(
     case
       when
-        j.karikata_cd = ${condition.target_cd}
+        j.karikata_cd = ${condition.ledger_cd}
       then
         j.karikata_value else 0 end
   ) over (
@@ -26,7 +26,7 @@ select
   sum(
     case
       when
-        j.kasikata_cd = ${condition.target_cd}
+        j.kasikata_cd = ${condition.ledger_cd}
       then
         j.kasikata_value else 0 end
   ) over (
@@ -46,7 +46,7 @@ from
       karikata_value,
       kasikata_value,
       case karikata_cd
-        when ${condition.target_cd} then kasikata_cd
+        when ${condition.ledger_cd} then kasikata_cd
         else karikata_cd
       end as another_cd,
       created_at
@@ -55,8 +55,8 @@ from
     where
       nendo = ${condition.nendo}
       and (
-        karikata_cd = ${condition.target_cd}
-        or kasikata_cd = ${condition.target_cd}
+        karikata_cd = ${condition.ledger_cd}
+        or kasikata_cd = ${condition.ledger_cd}
       )
   ) j
 order by

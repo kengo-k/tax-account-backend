@@ -14,7 +14,7 @@ afterAll(() => {
   conn.getConnection().close();
 });
 
-test("service/neodo", async () => {
+test("nendo/select", async () => {
   const service = getContainer().get<MasterService>(TYPES.MasterService);
   const result = await service.selectNendoList();
   expect(result.length).toEqual(3);

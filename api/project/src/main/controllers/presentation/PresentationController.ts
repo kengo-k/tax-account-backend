@@ -1,3 +1,4 @@
+import * as express from "express";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@core/container/types";
 import { MasterService } from "@services/master/MasterService";
@@ -19,32 +20,32 @@ export class PresentationController extends BaseController {
     super();
   }
 
-  public selectInit(req: any, res: any) {
+  public selectInit(req: express.Request<any>, res: express.Response<any>) {
     this.execute(req, res, async () => {
       const [param] = InitSearchRequest.isValid(req.query);
       if (param == null) {
         // prettier-ignore
         throw new RequestError(`invalid request: create for ${JSON.stringify(req.body)}`);
       }
-      const nendoList = await this.masterService.selectNendoList();
-      let targetNendo = nendoList[0].nendo;
+      const nendo_list = await this.masterService.selectNendoList();
+      let targetNendo = nendo_list[0].nendo;
       if (param.nendo != null) {
         targetNendo = param.nendo;
       }
-      let ledgerList: LedgerSearchResponse[] = [];
-      if (param.target_cd != null) {
-        ledgerList = await this.journalService.selectLedger({
+      let ledger_list: LedgerSearchResponse[] = [];
+      if (param.ledger_cd != null) {
+        ledger_list = await this.journalService.selectLedger({
           nendo: targetNendo,
-          target_cd: param.target_cd,
+          ledger_cd: param.ledger_cd,
         });
       }
-      const kamokuMasterList = await this.masterService.selectKamokuList();
-      const saimokuMasterList = await this.masterService.selectSaimokuList();
+      const kamoku_list = await this.masterService.selectKamokuList();
+      const saimoku_list = await this.masterService.selectSaimokuList();
       const result: InitSearchResponse = {
-        nendoList,
-        kamokuMasterList,
-        saimokuMasterList,
-        ledgerList,
+        nendo_list,
+        kamoku_list,
+        saimoku_list,
+        ledger_list,
       };
       return result;
     });

@@ -4,7 +4,8 @@ import { BaseService } from "@services/BaseService";
 import { ConnectionProvider } from "@core/connection/ConnectionProvider";
 import { LedgerSearchRequest } from "@common/model/journal/LedgerSearchRequest";
 import { LedgerSearchResponse } from "@common/model/journal/LedgerSearchResponse";
-import { selectLedger as getSelectLedgerSql } from "./selectLedger.sql";
+import { selectLedger as getSelectLedgerSql } from "@services/journal/selectLedger.sql";
+import { summaryKamokuBunrui as getKamokuBunruiSummarySql } from "@services/journal/summaryKamokuBunrui.sql";
 import { MasterService } from "@services/master/MasterService";
 import { LedgerCreateRequest } from "@common/model/journal/LedgerCreateRequest";
 import { LedgerUpdateRequest } from "@common/model/journal/LedgerUpdateRequest";
@@ -15,6 +16,9 @@ import {
 import { SaimokuSearchResponse } from "@common/model/master/SaimokuSearchResponse";
 import { EntitySearchType, Order } from "@common/model/Entity";
 import { JournalSearchRequest } from "@common/model/journal/JournalSearchRequest";
+import { KamokuBunruiSummaryRequest } from "@common/model/journal/KamokuBunruiSummaryRequest";
+import { KamokuBunruiSummaryResponse } from "@common/model/journal/KamokuBunruiSummaryResponse";
+import { KamokuBunruiCodeConst } from "@common/constant/kamokuBunrui";
 
 @injectable()
 export class JournalService extends BaseService {
@@ -87,6 +91,29 @@ export class JournalService extends BaseService {
     )[0];
     const entity = toJournalEntity(condition, saimokuDetail);
     return await this.update<IJournalEntity>(entity);
+  }
+
+  public async summaryKamokuBunrui(condition: KamokuBunruiSummaryRequest) {
+    const summaryList = await this.mapSelect(
+      KamokuBunruiSummaryResponse,
+      getKamokuBunruiSummarySql(condition),
+      (res) => {
+        const sumL = res.karikata_kamoku_bunrui_sum;
+        const sumR = res.kasikata_kamoku_bunrui_sum;
+        if (
+          [
+            KamokuBunruiCodeConst.ASSETS,
+            KamokuBunruiCodeConst.EXPENSES,
+          ].includes(condition.kamoku_bunrui_cd)
+        ) {
+          res.value = sumL - sumR;
+        } else {
+          res.value = sumR - sumL;
+        }
+        return res;
+      }
+    );
+    return summaryList[0];
   }
 }
 

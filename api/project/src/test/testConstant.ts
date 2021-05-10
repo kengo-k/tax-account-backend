@@ -22,6 +22,11 @@ export const DefaultNendo = "2020";
 export const DefaultDate = "20200401";
 export const getDefaultDate = getDate(DefaultDate);
 
+// 集計系で使用する年度
+export const SummaryNendo = "2019";
+export const SummaryDate = "20190401";
+export const getSummaryDate = getDate(SummaryDate);
+
 // 売掛金で売り上げ計上して、預金に入れるパターン
 export const LedgerCdSet1 = {
   URIKAKE: SC.URIKAKE,

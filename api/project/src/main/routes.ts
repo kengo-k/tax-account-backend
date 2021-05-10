@@ -43,17 +43,29 @@ const { GET, POST, PUT, DELETE } = API_METHOD;
 // prettier-ignore
 function buildRoute() {
   const container = getContainer();
+
+  //
   // core api
+  //
+
+  // 仕訳系API
   addRoute(GET, "/api/v1/journals/:nendo", container.get<JournalController>(TYPES.JournalController), (controller) => controller.selectJournals);
   addRoute(GET, "/api/v1/journal/:id", container.get<JournalController>(TYPES.JournalController), (controller) => controller.selectById);
   addRoute(POST, "/api/v1/journal", container.get<JournalController>(TYPES.JournalController), (controller) => controller.create);
   addRoute(PUT, "/api/v1/journal/:id", container.get<JournalController>(TYPES.JournalController), (controller) => controller.update);
   addRoute(DELETE, "/api/v1/journal/:id", container.get<JournalController>(TYPES.JournalController), (controller) => controller.delete);
+
+  // 台帳系API
   addRoute(GET, "/api/v1/ledger/:nendo/:ledger_cd", container.get<JournalController>(TYPES.JournalController), (controller) => controller.selectLedger);
   addRoute(POST, "/api/v1/ledger", container.get<JournalController>(TYPES.JournalController), (controller) => controller.createLedger);
   addRoute(PUT, "/api/v1/ledger/:id", container.get<JournalController>(TYPES.JournalController), (controller) => controller.updateLedger);
 
+  // 集計系API
+  addRoute(GET, "/api/v1/summary/:nendo/:kamoku_bunrui_cd", container.get<JournalController>(TYPES.JournalController), (controller) => controller.summaryKamokuBunrui);
+
+  //
   // presentation api
+  //
   addRoute(GET, "/papi/v1/init", container.get<PresentationController>(TYPES.PresentationController), (controller) => controller.selectInit);
 }
 

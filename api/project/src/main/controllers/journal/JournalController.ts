@@ -9,6 +9,7 @@ import { LedgerSearchRequest } from "@common/model/journal/LedgerSearchRequest";
 import { LedgerCreateRequest } from "@common/model/journal/LedgerCreateRequest";
 import { LedgerUpdateRequest } from "@common/model/journal/LedgerUpdateRequest";
 import { JournalSearchRequest } from "@common/model/journal/JournalSearchRequest";
+import { KamokuBunruiSummaryRequest } from "@common/model/journal/KamokuBunruiSummaryRequest";
 
 @injectable()
 export class JournalController extends BaseController {
@@ -141,6 +142,24 @@ export class JournalController extends BaseController {
       }
       const request = new LedgerUpdateRequest(param);
       const result = await this.journalService.updateLedger(request);
+      return result;
+    });
+  }
+
+  public summaryKamokuBunrui(
+    req: express.Request<any>,
+    res: express.Response<any>
+  ) {
+    this.execute(req, res, async () => {
+      const params = {};
+      Object.assign(params, req.params);
+      const [param, error] = KamokuBunruiSummaryRequest.isValid(params);
+      if (param == null) {
+        // prettier-ignore
+        throw new RequestError(`invalid request: ${JSON.stringify(params)}`);
+      }
+      const request = new KamokuBunruiSummaryRequest(param);
+      const result = await this.journalService.summaryKamokuBunrui(request);
       return result;
     });
   }

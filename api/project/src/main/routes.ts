@@ -60,13 +60,11 @@ function buildRoute() {
   addRoute(POST, "/api/v1/ledger", container.get<JournalController>(TYPES.JournalController), (controller) => controller.createLedger);
   addRoute(PUT, "/api/v1/ledger/:id", container.get<JournalController>(TYPES.JournalController), (controller) => controller.updateLedger);
 
-  // 集計系API
-  addRoute(GET, "/api/v1/summary/:nendo/:kamoku_bunrui_cd", container.get<JournalController>(TYPES.JournalController), (controller) => controller.summaryKamokuBunrui);
-
   //
   // presentation api
   //
   addRoute(GET, "/papi/v1/init", container.get<PresentationController>(TYPES.PresentationController), (controller) => controller.selectInit);
+  addRoute(GET, "/papi/v1/summary", container.get<PresentationController>(TYPES.PresentationController), (controller) => controller.selectSummary);
 }
 
 buildRoute();

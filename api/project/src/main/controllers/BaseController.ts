@@ -3,6 +3,7 @@ import { injectable } from "inversify";
 import { ApplicationError, RequestError } from "@common/error/ApplicationError";
 import { SystemError } from "@common/error/SystemError";
 import { ErrorResponse, SuccessResponse } from "@common/model/Response";
+import { ConvertCheckResult } from "@common/Converter";
 
 @injectable()
 export class BaseController {
@@ -48,5 +49,18 @@ export class BaseController {
       throw new RequestError(`invalid id format: ${req.params["id"]}`);
     }
     return id;
+  }
+
+  public checkValidationResult<T>(
+    params: any,
+    result: [T | undefined, ConvertCheckResult]
+  ): T {
+    if (result[0] == null) {
+      throw new RequestError(
+        // prettier-ignore
+        `invalid request(${JSON.stringify(params)}), reason: ${JSON.stringify(result[1])}`
+      );
+    }
+    return result[0];
   }
 }

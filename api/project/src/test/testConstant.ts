@@ -27,6 +27,10 @@ export const SummaryNendo = "2019";
 export const SummaryDate = "20190401";
 export const getSummaryDate = getDate(SummaryDate);
 
+export const SummaryNendo2 = "2018";
+export const SummaryDate2 = "20180401";
+export const getSummaryDate2 = getDate(SummaryDate2);
+
 // 売掛金で売り上げ計上して、預金に入れるパターン
 export const LedgerCdSet1 = {
   URIKAKE: SC.URIKAKE,

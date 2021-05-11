@@ -68,4 +68,6 @@ test("service/summary", async () => {
   expect(result3.karikata_kamoku_bunrui_sum).toEqual(2600000);
   expect(result3.kasikata_kamoku_bunrui_sum).toEqual(1436000);
   expect(result3.value).toEqual(1164000);
+
+  const taxResult = await service.calcTax({ nendo: SummaryNendo });
 });

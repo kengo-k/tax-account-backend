@@ -70,10 +70,15 @@ export class PresentationController extends BaseController {
         nendo: request.nendo,
         kamoku_bunrui_cd: KamokuBunruiCodeConst.EXPENSES,
       });
+      // 税額計算
+      const tax = await this.journalService.calcTax({ nendo: request.nendo });
+
       const result: SummaryResponse = {
         sales: sales.value,
         expenses: expenses.value,
+        tax,
       };
+
       return result;
     });
   }

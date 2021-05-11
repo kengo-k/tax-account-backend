@@ -18,6 +18,8 @@ import { EntitySearchType, Order } from "@common/model/Entity";
 import { JournalSearchRequest } from "@common/model/journal/JournalSearchRequest";
 import { KamokuBunruiSummaryRequest } from "@common/model/journal/KamokuBunruiSummaryRequest";
 import { KamokuBunruiSummaryResponse } from "@common/model/journal/KamokuBunruiSummaryResponse";
+import { TaxCalcRequest } from "@common/model/journal/TaxCalcRequest";
+import { TaxCalcResponse } from "@common/model/journal/TaxCalcResponse";
 import { KamokuBunruiCodeConst } from "@common/constant/kamokuBunrui";
 
 @injectable()
@@ -115,6 +117,102 @@ export class JournalService extends BaseService {
     );
     return summaryList[0];
   }
+
+  public async calcTax(condition: TaxCalcRequest) {
+    const trun100 = trunc(100);
+    const trun1000 = trunc(1000);
+    // 売上計を取得する
+    const _sales = await this.summaryKamokuBunrui({
+      nendo: condition.nendo,
+      kamoku_bunrui_cd: KamokuBunruiCodeConst.SALES,
+    });
+    const sales = _sales.value;
+    // 経費計を取得する
+    const _expenses = await this.summaryKamokuBunrui({
+      nendo: condition.nendo,
+      kamoku_bunrui_cd: KamokuBunruiCodeConst.EXPENSES,
+    });
+    const expenses = _expenses.value;
+    // 所得
+    const income = sales - expenses;
+    // 800万までの部分とそれ以降の部分に分ける
+    const incomeUnder800 = income >= 8000000 ? 8000000 : income;
+    const incomeOver800 =
+      income - incomeUnder800 > 0 ? income - incomeUnder800 : 0;
+    const cotaxBaseUnder800 = trun1000(incomeUnder800);
+    const cotaxBaseOver800 = trun1000(incomeOver800);
+    // 法人税率 ※税率変更がないか毎年チェック！！
+    const cotaxRateUnder800 = 0.15;
+    const cotaxRateOver800 = 0.232;
+
+    // 法人税率をそれぞれに決定する
+    // 法人税額を算出する
+    const cotaxBase =
+      cotaxBaseUnder800 * cotaxRateUnder800 +
+      cotaxBaseOver800 * cotaxRateOver800;
+    // 銀行の利息等のすでに差し引かれている税額
+    // TODO あとで
+    const cotaxDeduction = 0;
+    const cotax = cotaxBase - cotaxDeduction;
+    const fixedCotax = trun1000(cotax);
+
+    // 地方法人税額を算出する
+    const localCotaxBase = cotaxBase;
+    const localCotaxRate = 0.044;
+    const localCotax = localCotaxBase * localCotaxRate;
+    const fixedLocalCotax = trun100(localCotax);
+
+    // 市民税(都民税)を算出する
+    const municipalTaxBase = cotaxBase;
+    const municipalTaxRate = 0.129;
+    const municipalTax = municipalTaxBase * municipalTaxRate;
+    const fixedMunicipalTax = trun100(municipalTax);
+
+    // 事業税を算出する
+    const bizTaxBase = trun1000(income);
+    const bizTaxRate = 0.034;
+    const bizTax = bizTaxBase * bizTaxRate;
+    const fixedBizTax = trun100(bizTax);
+
+    // 地方法人特別税
+    const specialLocalCotaxBase = fixedBizTax;
+    const specialLocalCotaxRate = 0.432;
+    const specialLocalCotax = specialLocalCotaxBase * specialLocalCotaxRate;
+    const fixedSpecialLocalCotax = trun100(specialLocalCotax);
+
+    const result = {
+      sales,
+      expenses,
+      income,
+      incomeUnder800,
+      incomeOver800,
+      cotaxBaseUnder800,
+      cotaxBaseOver800,
+      cotaxRateUnder800,
+      cotaxRateOver800,
+      cotaxBase,
+      cotaxDeduction,
+      cotax,
+      fixedCotax,
+      localCotaxBase,
+      localCotaxRate,
+      localCotax,
+      fixedLocalCotax,
+      municipalTaxBase,
+      municipalTaxRate,
+      municipalTax,
+      fixedMunicipalTax,
+      bizTaxBase,
+      bizTaxRate,
+      bizTax,
+      fixedBizTax,
+      specialLocalCotaxBase,
+      specialLocalCotaxRate,
+      specialLocalCotax,
+      fixedSpecialLocalCotax,
+    };
+    return new TaxCalcResponse(result);
+  }
 }
 
 const toJournalEntity = (
@@ -175,4 +273,8 @@ const toJournalEntity = (
     }
   }
   return new JournalEntity(entityValue);
+};
+
+const trunc = (unit: number) => (num: number) => {
+  return Math.trunc(num / unit) * unit;
 };

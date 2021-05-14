@@ -14,7 +14,11 @@ import {
   JournalEntity,
 } from "@common/model/journal/JournalEntity";
 import { SaimokuSearchResponse } from "@common/model/master/SaimokuSearchResponse";
-import { EntitySearchType, Order } from "@common/model/Entity";
+import {
+  EntitySearchCondition,
+  EntitySearchType,
+  Order,
+} from "@common/model/Entity";
 import { JournalSearchRequest } from "@common/model/journal/JournalSearchRequest";
 import { KamokuBunruiSummaryRequest } from "@common/model/journal/KamokuBunruiSummaryRequest";
 import { KamokuBunruiSummaryResponse } from "@common/model/journal/KamokuBunruiSummaryResponse";
@@ -34,13 +38,49 @@ export class JournalService extends BaseService {
   }
 
   public async selectJournals(condition: JournalSearchRequest) {
-    return await this.selectByEntity(JournalEntity, {
+    const entityCondition: EntitySearchCondition<JournalEntity> = {
       nendo: {
-        searchType: EntitySearchType.StringEqual,
+        searchType: EntitySearchType.Eq,
         value: condition.nendo,
       },
-      orderBy: [["created_at", Order.Desc]],
-    });
+    };
+    if (condition.date_from != null && condition.date_to != null) {
+      entityCondition.date = {
+        searchType: EntitySearchType.Between,
+        fromTo: [condition.date_from, condition.date_to],
+      };
+    } else if (condition.date_from != null) {
+      entityCondition.date = {
+        searchType: EntitySearchType.GtE,
+        value: condition.date_from,
+      };
+    } else if (condition.date_to != null) {
+      entityCondition.date = {
+        searchType: EntitySearchType.LtE,
+        value: condition.date_to,
+      };
+    }
+    if (condition.latest_order !== undefined) {
+      if (condition.latest_order) {
+        entityCondition.orderBy = [["updated_at", Order.Desc]];
+      } else {
+        entityCondition.orderBy = [["updated_at", Order.Asc]];
+      }
+    }
+    if (condition.largest_order !== undefined) {
+      if (condition.largest_order) {
+        entityCondition.orderBy = [["karikata_value", Order.Desc]];
+      } else {
+        entityCondition.orderBy = [["karikata_value", Order.Asc]];
+      }
+    }
+    if (entityCondition.orderBy == null) {
+      entityCondition.orderBy = [];
+    }
+    // デフォルトOrder条件
+    entityCondition.orderBy.push(["date", Order.Desc]);
+    entityCondition.orderBy.push(["id", Order.Desc]);
+    return await this.selectByEntity(JournalEntity, entityCondition);
   }
 
   public async selectLedger(condition: LedgerSearchRequest) {

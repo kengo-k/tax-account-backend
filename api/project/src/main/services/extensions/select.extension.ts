@@ -79,15 +79,17 @@ BaseService.prototype.select = async function <ROW, RES>(
   return this.mapSelect(responseType, sql, (res) => res);
 };
 
-const handlerFactory = <ROW>(responseType: new () => ROW) => (row: any) => {
-  const elem: ROW = new responseType();
-  const propNames = Object.getOwnPropertyNames(row);
-  for (const propName of propNames) {
-    const anyElem = (elem as any) as object;
-    Reflect.set(anyElem, propName, row[propName]);
-  }
-  return elem;
-};
+const handlerFactory =
+  <ROW>(responseType: new () => ROW) =>
+  (row: any) => {
+    const elem: ROW = new responseType();
+    const propNames = Object.getOwnPropertyNames(row);
+    for (const propName of propNames) {
+      const anyElem = elem as any as object;
+      Reflect.set(anyElem, propName, row[propName]);
+    }
+    return elem;
+  };
 
 BaseService.prototype.mapSelect = async function <ROW, RES>(
   responseType: new () => ROW,
@@ -122,10 +124,36 @@ BaseService.prototype.selectByEntity = async function <ENTITY extends {}>(
       continue;
     }
     const cond = (entity as any)[propName] as EntitySearchItem;
-    if (cond.searchType === EntitySearchType.StringEqual) {
+    if (cond.searchType === EntitySearchType.Eq) {
       wheres.push(`${propName} = $${index++}`);
       values.push(cond.value);
     }
+    if (cond.searchType === EntitySearchType.GtE) {
+      wheres.push(`${propName} >= $${index++}`);
+      values.push(cond.value);
+    }
+    if (cond.searchType === EntitySearchType.Gt) {
+      wheres.push(`${propName} > $${index++}`);
+      values.push(cond.value);
+    }
+    if (cond.searchType === EntitySearchType.LtE) {
+      wheres.push(`${propName} <= $${index++}`);
+      values.push(cond.value);
+    }
+    if (cond.searchType === EntitySearchType.Lt) {
+      wheres.push(`${propName} < $${index++}`);
+      values.push(cond.value);
+    }
+    if (cond.searchType === EntitySearchType.Between) {
+      wheres.push(`${propName} between $${index++} and $${index++}`);
+      values.push(cond.fromTo[0]);
+      values.push(cond.fromTo[1]);
+    }
+    // TODO ※Likeの実装方法わからないのでいったん保留
+    // if (cond.searchType === EntitySearchType.Like) {
+    //   wheres.push(`${propName} like $${index++}`);
+    //   values.push(cond.value);
+    // }
   }
   const where = wheres.join(" and ");
   const orderBy =

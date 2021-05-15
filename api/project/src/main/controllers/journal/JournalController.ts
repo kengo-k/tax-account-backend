@@ -34,13 +34,10 @@ export class JournalController extends BaseController {
   // TODO anyやめる
   public create(req: express.Request<any>, res: express.Response<any>) {
     this.execute(req, res, async () => {
-      const [param] = JournalEntity.isCreatable(req.body);
-      if (param == null) {
-        // prettier-ignore
-        throw new RequestError(`invalid request: create for ${JSON.stringify(req.body)}`);
-      }
-      const requestEntity = new JournalEntity(param);
-      const result = await this.journalService.create(requestEntity);
+      const json = this.getRequestJson(req);
+      const validJson = this.validateJson(json, JournalEntity.isCreatable);
+      const condition = new JournalEntity(validJson);
+      const result = await this.journalService.create(condition);
       if (result == null) {
         // prettier-ignore
         throw new NotFoundError(`invalid result: create for JournalEntity`);
@@ -52,14 +49,11 @@ export class JournalController extends BaseController {
   public update(req: express.Request<any>, res: express.Response<any>) {
     this.execute(req, res, async () => {
       const id = this.checkId(req);
-      const [param] = JournalEntity.isUpdatable(req.body);
-      if (param == null) {
-        // prettier-ignore
-        throw new RequestError(`invalid request: update for ${JSON.stringify(req.body)}`);
-      }
-      Object.assign(param, { id });
-      const requestEntity = new JournalEntity(param);
-      const result = await this.journalService.update(requestEntity);
+      const json = this.getRequestJson(req, "id");
+      const validJson = this.validateJson(json, JournalEntity.isUpdatable);
+      Object.assign(validJson, { id });
+      const condition = new JournalEntity(validJson);
+      const result = await this.journalService.update(condition);
       if (result == null) {
         // prettier-ignore
         throw new NotFoundError(`invalid result: update for JournalEntity(${id}) was not found`);
@@ -71,8 +65,8 @@ export class JournalController extends BaseController {
   public delete(req: express.Request<any>, res: express.Response<any>) {
     this.execute(req, res, async () => {
       const id = this.checkId(req);
-      const requestEntity = new JournalEntity({ id });
-      const result = await this.journalService.delete(requestEntity);
+      const condition = new JournalEntity({ id });
+      const result = await this.journalService.delete(condition);
       if (result == null) {
         // prettier-ignore
         throw new NotFoundError(`invalid result: delete for JournalEntity(${id}) was not found`);
@@ -83,64 +77,42 @@ export class JournalController extends BaseController {
 
   public selectJournals(req: express.Request<any>, res: express.Response<any>) {
     this.execute(req, res, async () => {
-      const [param] = JournalSearchRequest.isValid(req.params);
-      if (param == null) {
-        // prettier-ignore
-        throw new RequestError(
-          `invalid request: ${JSON.stringify(req.params)}`
-        );
-      }
-      const request = new JournalSearchRequest(param);
-      const result = await this.journalService.selectJournals(request);
+      const json = this.getRequestJson(req);
+      const validJson = this.validateJson(json, JournalSearchRequest.isValid);
+      const condition = new JournalSearchRequest(validJson);
+      const result = await this.journalService.selectJournals(condition);
       return result;
     });
   }
 
   public selectLedger(req: express.Request<any>, res: express.Response<any>) {
     this.execute(req, res, async () => {
-      const [param] = LedgerSearchRequest.isValid(req.params);
-      if (param == null) {
-        // prettier-ignore
-        throw new RequestError(
-          `invalid request: ${JSON.stringify(req.params)}`
-        );
-      }
-      const request = new LedgerSearchRequest(param);
-      const result = await this.journalService.selectLedger(request);
+      const json = this.getRequestJson(req);
+      const validJson = this.validateJson(json, LedgerSearchRequest.isValid);
+      const condition = new LedgerSearchRequest(validJson);
+      const result = await this.journalService.selectLedger(condition);
       return result;
     });
   }
 
   public createLedger(req: express.Request<any>, res: express.Response<any>) {
     this.execute(req, res, async () => {
-      const params = {};
-      Object.assign(params, req.body);
-      const [param, error] = LedgerCreateRequest.isValid(params);
-      if (param == null) {
-        // prettier-ignore
-        throw new RequestError(
-          `invalid request: ${JSON.stringify(params)}`
-        );
-      }
-      const request = new LedgerCreateRequest(param);
-      const result = await this.journalService.createLedger(request);
+      const json = this.getRequestJson(req);
+      const validJson = this.validateJson(json, LedgerCreateRequest.isValid);
+      const condition = new LedgerCreateRequest(validJson);
+      const result = await this.journalService.createLedger(condition);
       return result;
     });
   }
 
   public updateLedger(req: express.Request<any>, res: express.Response<any>) {
     this.execute(req, res, async () => {
-      const params = {};
       const id = this.checkId(req);
-      Object.assign(params, { id });
-      Object.assign(params, req.body);
-      const [param, error] = LedgerUpdateRequest.isValid(params);
-      if (param == null) {
-        // prettier-ignore
-        throw new RequestError(`invalid request: ${JSON.stringify(params)}`);
-      }
-      const request = new LedgerUpdateRequest(param);
-      const result = await this.journalService.updateLedger(request);
+      const json = this.getRequestJson(req, "id");
+      Object.assign(json, { id });
+      const validJson = this.validateJson(json, LedgerUpdateRequest.isValid);
+      const condition = new LedgerUpdateRequest(validJson);
+      const result = await this.journalService.updateLedger(condition);
       return result;
     });
   }

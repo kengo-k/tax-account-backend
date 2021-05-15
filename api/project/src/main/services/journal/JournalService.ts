@@ -84,6 +84,9 @@ export class JournalService extends BaseService {
   }
 
   public async selectLedger(condition: LedgerSearchRequest) {
+    if (condition.month == null) {
+      condition.month = "-1";
+    }
     const saimokuDetail = (
       await this.masterService.selectSaimokuDetail({
         saimoku_cd: condition.ledger_cd,

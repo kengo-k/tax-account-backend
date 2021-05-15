@@ -8,69 +8,79 @@ import {
 import { InitSearchResponse } from "@common/model/presentation/InitSearchResponse";
 
 const journalApiPath = "/api/v1/journal";
+const journalsApiPath = "/api/v1/journals";
 const ledgerApiPath = "/api/v1/ledger";
 const initApiPath = "/papi/v1/init";
 
-const getCreateJournal = (client: AxiosInstance) => (nendo: string) => async (
-  date: string,
-  karikata_cd: string,
-  kasikata_cd: string,
-  value: number
-) => {
-  return await client.post(journalApiPath, {
-    nendo,
-    date,
-    karikata_cd,
-    karikata_value: value,
-    kasikata_cd,
-    kasikata_value: value,
-    checked: "0",
-  });
-};
+const getCreateJournal =
+  (client: AxiosInstance) =>
+  (nendo: string) =>
+  async (
+    date: string,
+    karikata_cd: string,
+    kasikata_cd: string,
+    value: number
+  ) => {
+    return await client.post(journalApiPath, {
+      nendo,
+      date,
+      karikata_cd,
+      karikata_value: value,
+      kasikata_cd,
+      kasikata_value: value,
+      checked: "0",
+    });
+  };
 
-const getCreateLedger = (client: AxiosInstance) => (nendo: string) => async (
-  date: string,
-  ledger_cd: string,
-  other_cd: string,
-  karikata_value: number | null,
-  kasikata_value: number | null,
-  note: string | undefined
-) => {
-  const path = `${ledgerApiPath}`;
-  return await client.post(path, {
-    nendo,
-    date,
-    ledger_cd,
-    other_cd,
-    karikata_value,
-    kasikata_value,
-    note,
-  });
-};
+const getCreateLedger =
+  (client: AxiosInstance) =>
+  (nendo: string) =>
+  async (
+    date: string,
+    ledger_cd: string,
+    other_cd: string,
+    karikata_value: number | null,
+    kasikata_value: number | null,
+    note: string | undefined
+  ) => {
+    const path = `${ledgerApiPath}`;
+    return await client.post(path, {
+      nendo,
+      date,
+      ledger_cd,
+      other_cd,
+      karikata_value,
+      kasikata_value,
+      note,
+    });
+  };
 
-const getUpdateLedger = (client: AxiosInstance) => async (
-  id: number,
-  ledger_cd: string,
-  other_cd: string,
-  karikata_value: number | null,
-  kasikata_value: number | null
-) => {
-  const path = `${ledgerApiPath}/${id}`;
-  return await client.put(path, {
-    ledger_cd,
-    other_cd,
-    karikata_value,
-    kasikata_value,
-  });
-};
+const getUpdateLedger =
+  (client: AxiosInstance) =>
+  async (
+    id: number,
+    ledger_cd: string,
+    other_cd: string,
+    karikata_value: number | null,
+    kasikata_value: number | null
+  ) => {
+    const path = `${ledgerApiPath}/${id}`;
+    return await client.put(path, {
+      ledger_cd,
+      other_cd,
+      karikata_value,
+      kasikata_value,
+    });
+  };
 
-const createSelect = (client: AxiosInstance) => async (
-  nendo: string,
-  ledger_cd: string
-) => {
-  const path = `${ledgerApiPath}/${nendo}/${ledger_cd}`;
-  return await client.get(path);
-};
+const createSelect =
+  (client: AxiosInstance) =>
+  async (nendo: string, ledger_cd: string, month?: string) => {
+    const path = `${ledgerApiPath}/${nendo}/${ledger_cd}${
+      month == null ? "" : `?month=${month}`
+    }`;
+    return await client.get(path);
+  };
 
 test("ledger/select", async () => {
   const client = testServer.getClient();
@@ -87,7 +97,7 @@ test("ledger/select", async () => {
   expect(result1.data.body[0].acc).toEqual(1100000);
 
   await insert(getLedgerDate(2), CdSet.DEPOSIT, CdSet.URIKAKE, 500000);
-  await insert(getLedgerDate(3), CdSet.DEPOSIT, CdSet.URIKAKE, 600000);
+  await insert(getLedgerDate(40), CdSet.DEPOSIT, CdSet.URIKAKE, 600000);
 
   const result2 = await select(LedgerNendo, CdSet.URIKAKE);
   expect(result2.data.body.length).toEqual(4);
@@ -102,23 +112,35 @@ test("ledger/select", async () => {
   const result4 = await select(LedgerNendo, CdSet.DEPOSIT);
   expect(result4.data.body.length).toEqual(2);
   expect(result4.data.body[0].acc).toEqual(1100000);
+
+  const monthSelectResult1 = await select(LedgerNendo, CdSet.DEPOSIT, "04");
+  expect(monthSelectResult1.data.body).toBeDefined();
+  expect(monthSelectResult1.data.body.length).toEqual(1);
+
+  const monthSelectResult2 = await select(LedgerNendo, CdSet.DEPOSIT, "05");
+  expect(monthSelectResult2.data.body).toBeDefined();
+  expect(monthSelectResult2.data.body.length).toEqual(1);
+  expect(monthSelectResult2.data.body[0].acc).toEqual(1100000);
+
+  const monthSelectResult3 = await select(LedgerNendo, CdSet.DEPOSIT, "06");
+  expect(monthSelectResult3.data.body).toBeDefined();
+  expect(monthSelectResult3.data.body.length).toEqual(0);
 });
 
-const getSelectInit = (client: AxiosInstance) => async (
-  nendo: string | undefined,
-  ledger_cd: string | undefined
-) => {
-  const querys = [];
-  if (nendo != null) {
-    querys.push(`nendo=${nendo}`);
-  }
-  if (ledger_cd != null) {
-    querys.push(`ledger_cd=${ledger_cd}`);
-  }
-  return await client.get<{ body: InitSearchResponse }>(
-    `${initApiPath}${querys.length === 0 ? "" : `?${querys.join("&")}`}`
-  );
-};
+const getSelectInit =
+  (client: AxiosInstance) =>
+  async (nendo: string | undefined, ledger_cd: string | undefined) => {
+    const querys = [];
+    if (nendo != null) {
+      querys.push(`nendo=${nendo}`);
+    }
+    if (ledger_cd != null) {
+      querys.push(`ledger_cd=${ledger_cd}`);
+    }
+    return await client.get<{ body: InitSearchResponse }>(
+      `${initApiPath}${querys.length === 0 ? "" : `?${querys.join("&")}`}`
+    );
+  };
 
 test("papi/init", async () => {
   const client = testServer.getClient();

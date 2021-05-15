@@ -3,7 +3,7 @@ import { injectable } from "inversify";
 import { ApplicationError, RequestError } from "@common/error/ApplicationError";
 import { SystemError } from "@common/error/SystemError";
 import { ErrorResponse, SuccessResponse } from "@common/model/Response";
-import { ConvertCheckResult } from "@common/Converter";
+import { Converter } from "@common/Converter";
 
 @injectable()
 export class BaseController {
@@ -51,10 +51,8 @@ export class BaseController {
     return id;
   }
 
-  public checkValidationResult<T>(
-    params: any,
-    result: [T | undefined, ConvertCheckResult]
-  ): T {
+  public validateJson<T>(params: any, validate: Converter<T>["convert"]): T {
+    const result = validate(params);
     if (result[0] == null) {
       throw new RequestError(
         // prettier-ignore
@@ -62,5 +60,16 @@ export class BaseController {
       );
     }
     return result[0];
+  }
+
+  public getRequestJson(req: express.Request<any>, ...excludes: string[]) {
+    const json = {};
+    Object.assign(json, req.params);
+    Object.assign(json, req.query);
+    Object.assign(json, req.body);
+    for (const key of excludes) {
+      delete (json as any)[key];
+    }
+    return json;
   }
 }

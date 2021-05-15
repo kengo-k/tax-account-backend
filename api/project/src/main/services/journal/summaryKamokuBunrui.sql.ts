@@ -1,9 +1,8 @@
 import { KamokuBunruiSummaryRequest } from "@common/model/journal/KamokuBunruiSummaryRequest";
 
-export const summaryKamokuBunrui = (condition: KamokuBunruiSummaryRequest) => (
-  sql: any
-) => {
-  return sql`
+export const summaryKamokuBunrui =
+  (condition: KamokuBunruiSummaryRequest) => (sql: any) => {
+    return sql`
 select
   sum(case
       when karikata_kamoku_bunrui_cd = ${condition.kamoku_bunrui_cd}
@@ -39,4 +38,4 @@ where
   j2.karikata_kamoku_bunrui_cd = ${condition.kamoku_bunrui_cd}
   or j2.kasikata_kamoku_bunrui_cd = ${condition.kamoku_bunrui_cd}
 `;
-};
+  };

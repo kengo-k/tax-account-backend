@@ -3,6 +3,9 @@ import { LedgerSearchRequest } from "@common/model/journal/LedgerSearchRequest";
 export const selectLedger = (condition: LedgerSearchRequest) => (sql: any) => {
   return sql`
 select
+  *
+from (
+select
   j.id as journal_id,
   j.nendo,
   j.date,
@@ -34,7 +37,8 @@ select
       j.date desc
     rows
       between current row and unbounded following
-  ) kasikata_sum
+  ) kasikata_sum,
+  j.created_at
 from
   (
     select
@@ -59,8 +63,12 @@ from
         or kasikata_cd = ${condition.ledger_cd}
       )
   ) j
+) j2
+where
+  (case when ${condition.month} = '-1' then '-1' else ${condition.month} end)
+   = (case when ${condition.month} = '-1' then '-1' else substring(j2.date, 5, 2) end)
 order by
-  j.date desc,
-  j.created_at desc
+  j2.date desc,
+  j2.created_at desc
 `;
 };

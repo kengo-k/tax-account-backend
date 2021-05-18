@@ -51,7 +51,7 @@ declare module "@services/BaseService" {
     selectByEntity<ENTITY>(
       entityType: new () => ENTITY,
       entity: EntitySearchCondition<ENTITY>
-    ): Promise<ENTITY[]>;
+    ): Promise<{ all_count: number; list: ENTITY[] }>;
   }
 }
 
@@ -160,15 +160,24 @@ BaseService.prototype.selectByEntity = async function <ENTITY extends {}>(
     entity.orderBy != null && entity.orderBy.length > 0
       ? `order by ${entity.orderBy.map((o) => o.join(" ")).join(",")}`
       : "";
+  const limitClause =
+    entity.paging == null
+      ? ""
+      : `limit ${entity.paging.page_size} offset ${entity.paging.offSet}`;
+  // TODO SQLインジェクション対策できてないのでは？？
   const result = await connection.sql.unsafe(
-    `select * from ${tableName} ${
+    `select *, count(*) over (partition by 1) as all_count from ${tableName} ${
       where.length > 0 ? `where ${where}` : ""
-    } ${orderBy}`,
+    } ${orderBy} ${limitClause}`,
     values
   );
   const handler = handlerFactory(entityType);
+  let all_count;
   for (const row of result) {
+    if (all_count == null) {
+      all_count = row.all_count;
+    }
     ret.push(handler(row));
   }
-  return ret;
+  return { all_count, list: ret };
 };

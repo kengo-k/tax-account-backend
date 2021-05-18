@@ -27,29 +27,15 @@ export class PresentationController extends BaseController {
 
   public selectInit(req: express.Request<any>, res: express.Response<any>) {
     this.execute(req, res, async () => {
-      const json = this.getRequestJson(req);
-      const validJson = this.validateJson(json, InitSearchRequest.isValid);
       const nendo_list = await this.masterService.selectNendoList();
-      let targetNendo = nendo_list[0].nendo;
-      if (validJson.nendo != null) {
-        targetNendo = validJson.nendo;
-      }
-      let ledger_list: LedgerSearchResponse[] = [];
-      if (validJson.ledger_cd != null) {
-        const ledgerCondition = new LedgerSearchRequest({
-          nendo: targetNendo,
-          ledger_cd: validJson.ledger_cd,
-          month: "-1",
-        });
-        ledger_list = await this.journalService.selectLedger(ledgerCondition);
-      }
       const kamoku_list = await this.masterService.selectKamokuList();
       const saimoku_list = await this.masterService.selectSaimokuList();
+      // TODO なんとかする
       const result: InitSearchResponse = {
-        nendo_list,
-        kamoku_list,
-        saimoku_list,
-        ledger_list,
+        nendo_list: (nendo_list as any).list,
+        kamoku_list: (kamoku_list as any).list,
+        saimoku_list: (saimoku_list as any).list,
+        ledger_list: [],
       };
       return result;
     });

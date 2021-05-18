@@ -3,7 +3,8 @@ import { LedgerSearchRequest } from "@common/model/journal/LedgerSearchRequest";
 export const selectLedger = (condition: LedgerSearchRequest) => (sql: any) => {
   return sql`
 select
-  *
+  *,
+  count(*) over (partition by 1) as all_count
 from (
 select
   j.id as journal_id,
@@ -65,10 +66,11 @@ from
   ) j
 ) j2
 where
-  (case when ${condition.month} = '-1' then '-1' else ${condition.month} end)
-   = (case when ${condition.month} = '-1' then '-1' else substring(j2.date, 5, 2) end)
+  (case when ${condition.month} = 'all' then 'all' else ${condition.month} end)
+   = (case when ${condition.month} = 'all' then 'all' else substring(j2.date, 5, 2) end)
 order by
   j2.date desc,
   j2.created_at desc
+limit ${condition.page_size} offset ${condition.offSet}
 `;
 };

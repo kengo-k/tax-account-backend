@@ -38,17 +38,10 @@ test("converter", () => {
   expect(res4.errors.length).toEqual(1);
   expect(res4.getError()["x"]).toEqual(ConverterErrorMessage.NotExist);
 
-  // 異常系(型エラー)
-  const res5 = converter.isConvertible({ a: "5", b: "hello" });
-  expect(res5.isConvertible()).toBeFalsy();
-  expect(res5.errors.length).toEqual(1);
-  expect(res5.getError()["a"]).toEqual(ConverterErrorMessage.TypeMismatch);
-
   // 異常系(複数エラー)
   const res6 = converter.isConvertible({ a: "5", x: 5 });
   expect(res6.isConvertible()).toBeFalsy();
-  expect(res6.errors.length).toEqual(3);
-  expect(res6.getError()["a"]).toEqual(ConverterErrorMessage.TypeMismatch);
+  expect(res6.errors.length).toEqual(2);
   expect(res6.getError()["b"]).toEqual(ConverterErrorMessage.Required);
   expect(res6.getError()["x"]).toEqual(ConverterErrorMessage.NotExist);
 });

@@ -25,6 +25,7 @@ import { KamokuBunruiSummaryResponse } from "@common/model/journal/KamokuBunruiS
 import { TaxCalcRequest } from "@common/model/journal/TaxCalcRequest";
 import { TaxCalcResponse } from "@common/model/journal/TaxCalcResponse";
 import { KamokuBunruiCodeConst } from "@common/constant/kamokuBunrui";
+import { PagingRequest } from "@common/model/PagingCondition";
 
 @injectable()
 export class JournalService extends BaseService {
@@ -80,22 +81,31 @@ export class JournalService extends BaseService {
     // デフォルトOrder条件
     entityCondition.orderBy.push(["date", Order.Desc]);
     entityCondition.orderBy.push(["id", Order.Desc]);
+    if (condition.page_no != null && condition.page_size != null) {
+      entityCondition.paging = new PagingRequest({
+        page_no: condition.page_no,
+        page_size: condition.page_size,
+      });
+    }
     return await this.selectByEntity(JournalEntity, entityCondition);
   }
 
   public async selectLedger(condition: LedgerSearchRequest) {
-    if (condition.month == null) {
-      condition.month = "-1";
-    }
+    condition.month = condition.month ?? "all";
+    condition.page_no = condition.page_no ?? 1;
+    condition.page_size = condition.page_size ?? 10;
     const saimokuDetail = (
       await this.masterService.selectSaimokuDetail({
         saimoku_cd: condition.ledger_cd,
       })
     )[0];
-    return await this.mapSelect(
+    let all_count;
+    const result = await this.mapSelect(
       LedgerSearchResponse,
       getSelectLedgerSql(condition),
       (res) => {
+        // TODO もうちょっとなんとかしたい
+        all_count = (res as any).all_count;
         const sumL = res.karikata_sum;
         const sumR = res.kasikata_sum;
         if (saimokuDetail.kamoku_bunrui_type === "L") {
@@ -116,6 +126,7 @@ export class JournalService extends BaseService {
         return res;
       }
     );
+    return { all_count, list: result };
   }
 
   public async createLedger(condition: LedgerCreateRequest) {

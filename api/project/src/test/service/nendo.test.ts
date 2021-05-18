@@ -17,8 +17,8 @@ afterAll(() => {
 test("nendo/select", async () => {
   const service = getContainer().get<MasterService>(TYPES.MasterService);
   const result = await service.selectNendoList();
-  expect(result.length).toEqual(3);
-  expect(result[0].nendo).toEqual("2021");
-  expect(result[1].nendo).toEqual("2020");
-  expect(result[2].nendo).toEqual("2019");
+  expect(result.list.length).toEqual(3);
+  expect(result.list[0].nendo).toEqual("2021");
+  expect(result.list[1].nendo).toEqual("2020");
+  expect(result.list[2].nendo).toEqual("2019");
 });

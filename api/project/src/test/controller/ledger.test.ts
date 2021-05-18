@@ -73,11 +73,41 @@ const getUpdateLedger =
     });
   };
 
-const createSelect =
+const createSelectLedger =
   (client: AxiosInstance) =>
-  async (nendo: string, ledger_cd: string, month?: string) => {
+  async (
+    nendo: string,
+    ledger_cd: string,
+    month?: string,
+    page_no?: number,
+    page_size?: number
+  ) => {
+    page_no = page_no == null ? 1 : page_no;
+    page_size = page_size == null ? 10 : page_size;
+    const query = [];
+    if (month != null) {
+      query.push(`month=${month}`);
+    }
+    query.push(`page_no=${page_no}`);
+    query.push(`page_size=${page_size}`);
     const path = `${ledgerApiPath}/${nendo}/${ledger_cd}${
-      month == null ? "" : `?month=${month}`
+      query.length === 0 ? "" : `?${query.join("&")}`
+    }`;
+    return await client.get(path);
+  };
+
+const createSelectJournals =
+  (client: AxiosInstance) =>
+  async (nendo: string, page_no?: number, page_size?: number) => {
+    const query = [];
+    if (page_no != null) {
+      query.push(`page_no=${page_no}`);
+    }
+    if (page_size != null) {
+      query.push(`page_size=${page_size}`);
+    }
+    const path = `${journalsApiPath}/${nendo}${
+      query.length === 0 ? "" : `?${query.join("&")}`
     }`;
     return await client.get(path);
   };
@@ -85,46 +115,91 @@ const createSelect =
 test("ledger/select", async () => {
   const client = testServer.getClient();
   const insert = getCreateJournal(client)(LedgerNendo);
-  const select = createSelect(client);
+  const selectLedger = createSelectLedger(client);
+  const selectJournals = createSelectJournals(client);
 
   await insert(getLedgerDate(), CdSet.URIKAKE, CdSet.SALES, 500000);
   await insert(getLedgerDate(1), CdSet.URIKAKE, CdSet.SALES, 600000);
 
-  const result1 = await select(LedgerNendo, CdSet.URIKAKE);
-  expect(result1.data.body.length).toEqual(2);
-  expect(result1.data.body[0].karikata_sum).toEqual(1100000);
-  expect(result1.data.body[0].kasikata_sum).toEqual(0);
-  expect(result1.data.body[0].acc).toEqual(1100000);
+  const result1 = await selectLedger(LedgerNendo, CdSet.URIKAKE);
+  expect(result1.data.body.list.length).toEqual(2);
+  expect(result1.data.body.list[0].karikata_sum).toEqual(1100000);
+  expect(result1.data.body.list[0].kasikata_sum).toEqual(0);
+  expect(result1.data.body.list[0].acc).toEqual(1100000);
 
   await insert(getLedgerDate(2), CdSet.DEPOSIT, CdSet.URIKAKE, 500000);
   await insert(getLedgerDate(40), CdSet.DEPOSIT, CdSet.URIKAKE, 600000);
 
-  const result2 = await select(LedgerNendo, CdSet.URIKAKE);
-  expect(result2.data.body.length).toEqual(4);
-  expect(result2.data.body[0].karikata_sum).toEqual(1100000);
-  expect(result2.data.body[0].kasikata_sum).toEqual(1100000);
-  expect(result2.data.body[0].acc).toEqual(0);
+  const result2 = await selectLedger(LedgerNendo, CdSet.URIKAKE);
+  expect(result2.data.body.list.length).toEqual(4);
+  expect(result2.data.body.list[0].karikata_sum).toEqual(1100000);
+  expect(result2.data.body.list[0].kasikata_sum).toEqual(1100000);
+  expect(result2.data.body.list[0].acc).toEqual(0);
 
-  const result3 = await select(LedgerNendo, CdSet.SALES);
-  expect(result3.data.body.length).toEqual(2);
-  expect(result3.data.body[0].acc).toEqual(1100000);
+  const result3 = await selectLedger(LedgerNendo, CdSet.SALES);
+  expect(result3.data.body.list.length).toEqual(2);
+  expect(result3.data.body.list[0].acc).toEqual(1100000);
 
-  const result4 = await select(LedgerNendo, CdSet.DEPOSIT);
-  expect(result4.data.body.length).toEqual(2);
-  expect(result4.data.body[0].acc).toEqual(1100000);
+  const result4 = await selectLedger(LedgerNendo, CdSet.DEPOSIT);
+  expect(result4.data.body.list.length).toEqual(2);
+  expect(result4.data.body.list[0].acc).toEqual(1100000);
 
-  const monthSelectResult1 = await select(LedgerNendo, CdSet.DEPOSIT, "04");
-  expect(monthSelectResult1.data.body).toBeDefined();
-  expect(monthSelectResult1.data.body.length).toEqual(1);
+  const monthSelectResult1 = await selectLedger(
+    LedgerNendo,
+    CdSet.DEPOSIT,
+    "04"
+  );
+  expect(monthSelectResult1.data.body.list).toBeDefined();
+  expect(monthSelectResult1.data.body.list.length).toEqual(1);
 
-  const monthSelectResult2 = await select(LedgerNendo, CdSet.DEPOSIT, "05");
-  expect(monthSelectResult2.data.body).toBeDefined();
-  expect(monthSelectResult2.data.body.length).toEqual(1);
-  expect(monthSelectResult2.data.body[0].acc).toEqual(1100000);
+  const monthSelectResult2 = await selectLedger(
+    LedgerNendo,
+    CdSet.DEPOSIT,
+    "05"
+  );
+  expect(monthSelectResult2.data.body.list).toBeDefined();
+  expect(monthSelectResult2.data.body.list.length).toEqual(1);
+  expect(monthSelectResult2.data.body.list[0].acc).toEqual(1100000);
 
-  const monthSelectResult3 = await select(LedgerNendo, CdSet.DEPOSIT, "06");
-  expect(monthSelectResult3.data.body).toBeDefined();
-  expect(monthSelectResult3.data.body.length).toEqual(0);
+  const monthSelectResult3 = await selectLedger(
+    LedgerNendo,
+    CdSet.DEPOSIT,
+    "06"
+  );
+  expect(monthSelectResult3.data.body.list).toBeDefined();
+  expect(monthSelectResult3.data.body.list.length).toEqual(0);
+
+  const s1 = await selectJournals(LedgerNendo, 1, 3);
+  expect(s1.data.body.list).toBeDefined();
+  expect(s1.data.body.list.length).toEqual(3);
+
+  const s2 = await selectJournals(LedgerNendo, 1, 4);
+  expect(s2.data.body.list).toBeDefined();
+  expect(s2.data.body.list.length).toEqual(4);
+
+  const s3 = await selectJournals(LedgerNendo, 1, 5);
+  expect(s3.data.body.list).toBeDefined();
+  expect(s3.data.body.list.length).toEqual(4);
+
+  const s4 = await selectJournals(LedgerNendo, 1, 1);
+  expect(s4.data.body.list).toBeDefined();
+  expect(s4.data.body.list.length).toEqual(1);
+
+  const s5 = await selectJournals(LedgerNendo, 2, 1);
+  expect(s5.data.body.list).toBeDefined();
+  expect(s5.data.body.list.length).toEqual(1);
+
+  const s6 = await selectJournals(LedgerNendo, 3, 1);
+  expect(s6.data.body.list).toBeDefined();
+  expect(s6.data.body.list.length).toEqual(1);
+
+  const s7 = await selectJournals(LedgerNendo, 4, 1);
+  expect(s7.data.body.list).toBeDefined();
+  expect(s7.data.body.list.length).toEqual(1);
+
+  const s8 = await selectJournals(LedgerNendo, 5, 1);
+  expect(s8.data.body.list).toBeDefined();
+  expect(s8.data.body.list.length).toEqual(0);
 });
 
 const getSelectInit =
@@ -150,14 +225,12 @@ test("papi/init", async () => {
   expect(selectResult.data.body.nendo_list.length).toBeGreaterThan(1);
   expect(selectResult.data.body.kamoku_list.length).toBeGreaterThan(1);
   expect(selectResult.data.body.saimoku_list.length).toBeGreaterThan(1);
-  expect(selectResult.data.body.ledger_list.length).toEqual(0);
 
   const selectResult2 = await select(LedgerNendo, undefined);
   expect(selectResult2.data.body).toBeTruthy();
   expect(selectResult2.data.body.nendo_list.length).toBeGreaterThan(1);
   expect(selectResult2.data.body.kamoku_list.length).toBeGreaterThan(1);
   expect(selectResult2.data.body.saimoku_list.length).toBeGreaterThan(1);
-  expect(selectResult2.data.body.ledger_list.length).toEqual(0);
 
   // prettier-ignore
   const selectResult3 = await select(LedgerNendo, CdSet.URIKAKE);
@@ -165,7 +238,6 @@ test("papi/init", async () => {
   expect(selectResult3.data.body.nendo_list.length).toBeGreaterThan(1);
   expect(selectResult3.data.body.kamoku_list.length).toBeGreaterThan(1);
   expect(selectResult3.data.body.saimoku_list.length).toBeGreaterThan(1);
-  expect(selectResult3.data.body.ledger_list.length).toBeGreaterThan(0);
 
   // prettier-ignore
   const selectResult4 = await select(undefined, CdSet.URIKAKE);
@@ -173,7 +245,6 @@ test("papi/init", async () => {
   expect(selectResult4.data.body.nendo_list.length).toBeGreaterThan(1);
   expect(selectResult4.data.body.kamoku_list.length).toBeGreaterThan(1);
   expect(selectResult4.data.body.saimoku_list.length).toBeGreaterThan(1);
-  expect(selectResult4.data.body.ledger_list.length).toBeGreaterThan(0);
 });
 
 test("ledger/create-update", async () => {

@@ -22,7 +22,7 @@ export class MasterService extends BaseService {
    * 科目マスタエンティティの一覧を取得
    * @returns
    */
-  public async selectKamokuList(): Promise<KamokuMasterEntity[]> {
+  public async selectKamokuList() {
     const searchCondition: EntitySearchCondition<KamokuMasterEntity> = {
       orderBy: [["kamoku_cd", Order.Asc]],
     };
@@ -33,7 +33,7 @@ export class MasterService extends BaseService {
    * 細目マスタエンティティの一覧を取得
    * @returns
    */
-  public async selectSaimokuList(): Promise<SaimokuMasterEntity[]> {
+  public async selectSaimokuList() {
     const searchCondition: EntitySearchCondition<SaimokuMasterEntity> = {
       orderBy: [["saimoku_cd", Order.Asc]],
     };

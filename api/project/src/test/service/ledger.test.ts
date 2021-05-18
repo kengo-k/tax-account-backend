@@ -83,42 +83,42 @@ test("ledger/crud", async () => {
   const selectResult1 = await service.selectJournals(
     new JournalSearchRequest({ nendo: DefaultNendo })
   );
-  expect(selectResult1.length).toEqual(3);
-  expect(selectResult1[0].date).toEqual(getDefaultDate(30));
-  expect(selectResult1[1].date).toEqual(getDefaultDate(20));
-  expect(selectResult1[2].date).toEqual(getDefaultDate(10));
+  expect(selectResult1.list.length).toEqual(3);
+  expect(selectResult1.list[0].date).toEqual(getDefaultDate(30));
+  expect(selectResult1.list[1].date).toEqual(getDefaultDate(20));
+  expect(selectResult1.list[2].date).toEqual(getDefaultDate(10));
 
   const selectResult2 = await service.selectJournals(
     new JournalSearchRequest({ nendo: DefaultNendo, latest_order: true })
   );
-  expect(selectResult2.length).toEqual(3);
-  expect(selectResult2[0].date).toEqual(getDefaultDate(30));
-  expect(selectResult2[1].date).toEqual(getDefaultDate(10));
-  expect(selectResult2[2].date).toEqual(getDefaultDate(20));
+  expect(selectResult2.list.length).toEqual(3);
+  expect(selectResult2.list[0].date).toEqual(getDefaultDate(30));
+  expect(selectResult2.list[1].date).toEqual(getDefaultDate(10));
+  expect(selectResult2.list[2].date).toEqual(getDefaultDate(20));
 
   const selectResult3 = await service.selectJournals(
     new JournalSearchRequest({ nendo: DefaultNendo, latest_order: false })
   );
-  expect(selectResult3.length).toEqual(3);
-  expect(selectResult3[0].date).toEqual(getDefaultDate(20));
-  expect(selectResult3[1].date).toEqual(getDefaultDate(10));
-  expect(selectResult3[2].date).toEqual(getDefaultDate(30));
+  expect(selectResult3.list.length).toEqual(3);
+  expect(selectResult3.list[0].date).toEqual(getDefaultDate(20));
+  expect(selectResult3.list[1].date).toEqual(getDefaultDate(10));
+  expect(selectResult3.list[2].date).toEqual(getDefaultDate(30));
 
   const selectResult4 = await service.selectJournals(
     new JournalSearchRequest({ nendo: DefaultNendo, largest_order: true })
   );
-  expect(selectResult4.length).toEqual(3);
-  expect(selectResult4[0].karikata_value).toEqual(300);
-  expect(selectResult4[1].karikata_value).toEqual(200);
-  expect(selectResult4[2].karikata_value).toEqual(100);
+  expect(selectResult4.list.length).toEqual(3);
+  expect(selectResult4.list[0].karikata_value).toEqual(300);
+  expect(selectResult4.list[1].karikata_value).toEqual(200);
+  expect(selectResult4.list[2].karikata_value).toEqual(100);
 
   const selectResult5 = await service.selectJournals(
     new JournalSearchRequest({ nendo: DefaultNendo, largest_order: false })
   );
-  expect(selectResult5.length).toEqual(3);
-  expect(selectResult5[0].karikata_value).toEqual(100);
-  expect(selectResult5[1].karikata_value).toEqual(200);
-  expect(selectResult5[2].karikata_value).toEqual(300);
+  expect(selectResult5.list.length).toEqual(3);
+  expect(selectResult5.list[0].karikata_value).toEqual(100);
+  expect(selectResult5.list[1].karikata_value).toEqual(200);
+  expect(selectResult5.list[2].karikata_value).toEqual(300);
 
   const selectResult6 = await service.selectJournals(
     new JournalSearchRequest({
@@ -126,7 +126,7 @@ test("ledger/crud", async () => {
       date_from: getDefaultDate(20),
     })
   );
-  expect(selectResult6.length).toEqual(2);
+  expect(selectResult6.list.length).toEqual(2);
 
   const selectResult7 = await service.selectJournals(
     new JournalSearchRequest({
@@ -135,7 +135,7 @@ test("ledger/crud", async () => {
       date_to: getDefaultDate(21),
     })
   );
-  expect(selectResult7.length).toEqual(1);
+  expect(selectResult7.list.length).toEqual(1);
 
   const selectResult8 = await service.selectJournals(
     new JournalSearchRequest({
@@ -143,7 +143,7 @@ test("ledger/crud", async () => {
       date_to: getDefaultDate(20),
     })
   );
-  expect(selectResult8.length).toEqual(2);
+  expect(selectResult8.list.length).toEqual(2);
 
   const selectResult9 = await service.selectJournals(
     new JournalSearchRequest({
@@ -151,5 +151,5 @@ test("ledger/crud", async () => {
       date_to: getDefaultDate(19),
     })
   );
-  expect(selectResult9.length).toEqual(1);
+  expect(selectResult9.list.length).toEqual(1);
 });

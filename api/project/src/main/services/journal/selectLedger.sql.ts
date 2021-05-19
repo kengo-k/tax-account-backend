@@ -39,6 +39,7 @@ select
     rows
       between current row and unbounded following
   ) kasikata_sum,
+  note,
   j.created_at
 from
   (
@@ -54,6 +55,7 @@ from
         when ${condition.ledger_cd} then kasikata_cd
         else karikata_cd
       end as another_cd,
+      note,
       created_at
     from
       journals j

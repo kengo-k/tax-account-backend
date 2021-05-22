@@ -118,9 +118,9 @@ export class JournalService extends BaseService {
         } else {
           res.acc = sumR - sumL;
           if (res.karikata_cd === condition.ledger_cd) {
-            res.karikata_value = 0;
-          } else {
             res.kasikata_value = 0;
+          } else {
+            res.karikata_value = 0;
           }
         }
         return res;

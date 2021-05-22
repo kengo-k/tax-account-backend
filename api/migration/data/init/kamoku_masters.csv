@@ -2,6 +2,7 @@ id,kamoku_cd,kamoku_full_name,kamoku_ryaku_name,kamoku_kana_name,kamoku_bunrui_c
 1,A1,現金,現金,genkin,1,,2021-03-21,2021-03-21
 2,A2,預金,預金,yokin,1,,2021-03-21,2021-03-21
 3,A3,売掛金,売掛,urikakekin,1,,2021-03-21,2021-03-21
+16,A4,貸付金,貸付,kasitukekin,1,,2021-03-21,2021-03-21
 4,B1,未払金,未払,miharaikin,2,主に未払い給与,2021-03-21,2021-03-21
 5,B2,借入金,借入,kariirekin,2,主に建替え経費,2021-03-21,2021-03-21
 6,B3,預り金,預り,azukarikin,2,主に源泉徴収した所得税,2021-03-21,2021-03-21

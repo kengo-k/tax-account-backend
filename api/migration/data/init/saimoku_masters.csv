@@ -2,6 +2,7 @@ id,kamoku_cd,saimoku_cd,saimoku_full_name,saimoku_ryaku_name,saimoku_kana_name,d
 1,A1,A11,現金,現金,genkin,,2021-03-21,2021-03-21
 2,A2,A21,ゆうちょ,郵貯,yuutyo,,2021-03-21,2021-03-21
 3,A3,A31,売掛金(CCT),CCT,cct,,2021-03-21,2021-03-21
+21,A4,A41,短期貸付金,短貸,tanki kasitukekin,,2021-03-21,2021-03-21
 4,B1,B11,未払給与,未給,miharai kyuuyo,,2021-03-21,2021-03-21
 5,B1,B12,未払経費,未経,miharai keihi,その他未払いの経費,2021-03-21,2021-03-21
 6,B1,B13,未払税,未税,miharai zei,未払い租税公課,2021-03-21,2021-03-21

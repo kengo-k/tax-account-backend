@@ -83,6 +83,16 @@ namespace :data do
     sh %Q[psql -U #{config['username']} -d #{config['database']} -h #{config['host']} -c "\\copy #{table} to '#{table}_#{timestamp}.csv' CSV HEADER"]
   end
 
+  desc "clear master table data"
+  task :clear_master, 'env'
+  task :clear_master do |t, args|
+    config = get_config args['env']
+    sh %Q[psql -U #{config['username']} -d #{config['database']} -h #{config['host']} -c "truncate table nendo_masters"]
+    sh %Q[psql -U #{config['username']} -d #{config['database']} -h #{config['host']} -c "truncate table kamoku_bunrui_masters"]
+    sh %Q[psql -U #{config['username']} -d #{config['database']} -h #{config['host']} -c "truncate table kamoku_masters"]
+    sh %Q[psql -U #{config['username']} -d #{config['database']} -h #{config['host']} -c "truncate table saimoku_masters"]
+  end
+
 end
 
 namespace :migrate do

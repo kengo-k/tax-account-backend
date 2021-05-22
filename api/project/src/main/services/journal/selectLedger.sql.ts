@@ -23,7 +23,8 @@ select
         j.karikata_value else 0 end
   ) over (
     order by
-      j.date desc
+      j.date desc,
+      j.created_at desc
     rows
       between current row and unbounded following
   ) karikata_sum,
@@ -35,7 +36,8 @@ select
         j.kasikata_value else 0 end
   ) over (
     order by
-      j.date desc
+      j.date desc,
+      j.created_at desc
     rows
       between current row and unbounded following
   ) kasikata_sum,

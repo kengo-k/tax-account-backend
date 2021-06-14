@@ -187,8 +187,11 @@ export class JournalService extends BaseService {
       kamoku_bunrui_cd: KamokuBunruiCodeConst.EXPENSES,
     });
     const expenses = _expenses.value;
+    // TODO 前年度事業税を取得
+    const preBizTax = 0;
     // 所得
-    const income = sales - expenses;
+    const income = sales - expenses - preBizTax;
+
     // 800万までの部分とそれ以降の部分に分ける
     const incomeUnder800 = income >= 8000000 ? 8000000 : income;
     const incomeOver800 =
@@ -208,23 +211,23 @@ export class JournalService extends BaseService {
     // TODO あとで
     const cotaxDeduction = 0;
     const cotax = cotaxBase - cotaxDeduction;
-    const fixedCotax = trun1000(cotax);
+    const fixedCotax = trun100(cotax);
 
     // 地方法人税額を算出する
-    const localCotaxBase = cotaxBase;
+    const localCotaxBase = trun1000(fixedCotax);
     const localCotaxRate = 0.044;
     const localCotax = localCotaxBase * localCotaxRate;
     const fixedLocalCotax = trun100(localCotax);
 
     // 市民税(都民税)を算出する
-    const municipalTaxBase = cotaxBase;
+    const municipalTaxBase = trun1000(fixedCotax);
     const municipalTaxRate = 0.129;
     const municipalTax = municipalTaxBase * municipalTaxRate;
-    const fixedMunicipalTax = trun100(municipalTax);
+    const fixedMunicipalTax = trun100(municipalTax) + 70000;
 
     // 事業税を算出する
     const bizTaxBase = trun1000(income);
-    const bizTaxRate = 0.034;
+    const bizTaxRate = 0.035;
     const bizTax = bizTaxBase * bizTaxRate;
     const fixedBizTax = trun100(bizTax);
 

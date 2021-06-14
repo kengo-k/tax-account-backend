@@ -3,3 +3,4 @@ data
 db.env
 api/config/database.yml
 api/project/node_modules
+api/project/public

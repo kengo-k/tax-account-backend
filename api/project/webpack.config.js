@@ -1,6 +1,5 @@
 const path = require("path");
 const webpack = require("webpack");
-const nodeExternals = require("webpack-node-externals");
 
 const sourcePath = path.resolve(__dirname, "./src");
 const outputPath = path.resolve(__dirname, "./public");

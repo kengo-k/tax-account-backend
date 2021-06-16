@@ -6,9 +6,8 @@ const sourcePath = path.resolve(__dirname, "./src");
 const outputPath = path.resolve(__dirname, "./public");
 
 module.exports = {
-  mode: "development",
+  mode: "production",
   target: "node",
-  externals: [nodeExternals()],
   entry: {
     apiserver: `${sourcePath}/main/start.ts`,
   },

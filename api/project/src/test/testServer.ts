@@ -1,12 +1,9 @@
-import { app } from "../main/app";
+import { app, port } from "../main/app";
 import axios from "axios";
 import { getContainer } from "@core/container/getContainer";
 import { TYPES } from "@core/container/types";
 import { ConnectionProvider } from "@core/connection/ConnectionProvider";
 import { ConnectionWrapper } from "@core/connection/ConnectionWrapper";
-
-// TODO コンフィグ化する
-const port = 8080;
 
 // prettier-ignore
 const getConnection = () => {
@@ -34,7 +31,7 @@ class TestServer {
 
   public getClient() {
     const client = axios.create({
-      baseURL: "http://account_api:8080",
+      baseURL: `http://account_api:${port}`,
       headers: {
         "Content-Type": "application/json",
         "X-Requested-With": "XMLHttpRequest",

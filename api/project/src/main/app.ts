@@ -45,4 +45,5 @@ const run = (route: Route) => (req: express.Request, res: express.Response) => {
   route.run.bind(route.controller)(req, res);
 };
 
-export { app };
+const port = 8000;
+export { app, port };

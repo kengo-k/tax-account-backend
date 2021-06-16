@@ -1,5 +1,5 @@
 import { ApplicationContext, Env } from "@core/ApplicationContext";
-import { app } from "./app";
+import { app, port } from "./app";
 
 if (process.env.NODE_ENV === Env.production) {
   ApplicationContext.setEnv(Env.production);
@@ -9,6 +9,6 @@ if (process.env.NODE_ENV === Env.production) {
   ApplicationContext.setEnv(Env.development);
 }
 
-app.listen(8080, () => {
-  console.log(` ${ApplicationContext.env} server started`);
+app.listen(port, () => {
+  console.log(` ${ApplicationContext.env} server started at port ${port}`);
 });

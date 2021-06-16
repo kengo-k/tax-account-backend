@@ -1,4 +1,5 @@
 const path = require("path");
+const webpack = require("webpack");
 const nodeExternals = require("webpack-node-externals");
 
 const sourcePath = path.resolve(__dirname, "./src");
@@ -32,4 +33,9 @@ module.exports = {
       "@services": path.resolve(__dirname, "src/main/services"),
     },
   },
+  plugins: [
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: process.env.NODE_ENV,
+    }),
+  ],
 };

@@ -20,6 +20,7 @@ export class BaseController {
       };
       res.send(JSON.stringify(successResponse));
     } catch (e) {
+      console.log(e);
       if (e instanceof SystemError) {
         this.setErrorResponse(res, e);
       } else if (e instanceof ApplicationError) {

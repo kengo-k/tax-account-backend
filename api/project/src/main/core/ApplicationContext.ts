@@ -53,4 +53,6 @@ const ApplicationContext: ApplicationContext = {
   setEnv,
 };
 
+console.log("apiRootDir:", apiRootDir);
+console.log("applicationContext:", ApplicationContext);
 export { ApplicationContext };

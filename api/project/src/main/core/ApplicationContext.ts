@@ -22,6 +22,7 @@ interface ApplicationContext {
   templateRootDir: string;
   env: Env;
   setEnv: (newEnv: string) => void;
+  configFilePath: string;
 }
 
 let env = Env.development;
@@ -49,6 +50,14 @@ const ApplicationContext: ApplicationContext = {
   templateRootDir: `${srcRootDir}/templates`,
   get env() {
     return env;
+  },
+  get configFilePath() {
+    const env = this.env;
+    if (env === Env.development) {
+      return `${apiRootDir}/config/database.yml`;
+    } else {
+      return "/tmp/database.yml";
+    }
   },
   setEnv,
 };

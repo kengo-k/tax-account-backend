@@ -16,11 +16,11 @@ export class ConnectionProvider {
     if (this.connection == null) {
       this.connection = this.createConnection();
     }
-    return (this.connection as any) as ConnectionWrapper;
+    return this.connection as any as ConnectionWrapper;
   }
 
   private createConnection(): ConnectionWrapper {
-    const dbConfigPath = `${ApplicationContext.apiRootDir}/config/database.yml`;
+    const dbConfigPath = ApplicationContext.configFilePath;
     const dbConfigValue = fs.readFileSync(dbConfigPath, "utf8");
     const dbConfig: any = yaml.load(dbConfigValue);
     const env = ApplicationContext.env;

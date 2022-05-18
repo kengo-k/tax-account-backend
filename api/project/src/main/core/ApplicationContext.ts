@@ -52,12 +52,7 @@ const ApplicationContext: ApplicationContext = {
     return env;
   },
   get configFilePath() {
-    const env = this.env;
-    if (env === Env.development) {
-      return `${apiRootDir}/config/database.yml`;
-    } else {
-      return "/tmp/database.yml";
-    }
+    return `${apiRootDir}/config/database.yml`;
   },
   setEnv,
 };

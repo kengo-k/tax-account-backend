@@ -28,7 +28,7 @@ export class ConnectionProvider {
     const host = dbConfig["common"]["host"];
     const username = dbConfig["common"]["username"];
     const password = dbConfig["common"]["username"];
-    const database = process.env.DATABASE || dbConfig[env]["database"];
+    const database = dbConfig[env]["database"];
 
     const connection = postgres({
       host,

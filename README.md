@@ -118,6 +118,14 @@ $ rake data:import[development,data/init]
 
 development データベースに data/init ディレクトリ配下の CSV データをインポートします。
 
+その他データのバックアップ等のタスクが Rakefile に記載されています。使用できるタスクを確認するには
+
+```
+$ rake --tasks
+```
+
+を実行してください。
+
 # 4.API サーバの起動
 
 api コンテナにログインし/opt/project ディレクトリに移動し、package.json ファイルに記述されている起動コマンドを実行します。起動コマンドは接続する DB ごとに異なります

@@ -93,6 +93,17 @@ namespace :data do
     sh %Q[psql -U #{config['username']} -d #{config['database']} -h #{config['host']} -c "truncate table saimoku_masters"]
   end
 
+  desc "back up all data"
+  task :backup, 'env', 'version'
+  task :backup do |t, args|
+    config = get_config args['env']
+    version = args['version']
+    version ||= Time.now.strftime('%Y%m%d%H%M%S')
+    path = "data/backup/#{version}.sql"
+    sh "pg_dump -U #{config['username']} -d #{config['database']} -h #{config['host']} -a > #{path}"
+    sh "chmod 666 #{path}"
+  end
+
 end
 
 namespace :migrate do

@@ -21,7 +21,9 @@ export class ConnectionProvider {
 
   private createConnection(): ConnectionWrapper {
     const dbConfigPath = ApplicationContext.configFilePath;
+    console.log("config: ", dbConfigPath);
     const dbConfigValue = fs.readFileSync(dbConfigPath, "utf8");
+    console.log("config value: ", dbConfigValue);
     const dbConfig: any = yaml.load(dbConfigValue);
     const env = ApplicationContext.env;
 

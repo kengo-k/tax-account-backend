@@ -7,7 +7,7 @@ const srcRootDir = `${currentDir}/..`;
 // プロジェクトのルート: /api/project
 const projectRootDir = `${srcRootDir}/../..`;
 // APIディレクトリのルート: /api
-const apiRootDir = `${projectRootDir}/..`;
+const apiRootDir = `${currentDir}`;
 
 export enum Env {
   development = "development",
@@ -52,7 +52,7 @@ const ApplicationContext: ApplicationContext = {
     return env;
   },
   get configFilePath() {
-    return `${apiRootDir}/config/database.yml`;
+    return `${apiRootDir}/database.yml`;
   },
   setEnv,
 };

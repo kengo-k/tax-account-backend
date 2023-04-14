@@ -31,7 +31,7 @@ class TestServer {
 
   public getClient() {
     const client = axios.create({
-      baseURL: `http://account_api:${port}`,
+      baseURL: `http://backend:${port}`,
       headers: {
         "Content-Type": "application/json",
         "X-Requested-With": "XMLHttpRequest",

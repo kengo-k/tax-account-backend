@@ -40,6 +40,7 @@
     "axios": "^0.21.1",
     "copy-webpack-plugin": "^6.4.1",
     "jest": "^26.6.3",
+    "prisma": "^4.14.0",
     "ts-jest": "^26.5.3",
     "ts-loader": "^6.2.1",
     "ts-node": "^9.1.1",

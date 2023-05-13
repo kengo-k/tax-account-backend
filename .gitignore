@@ -6,3 +6,4 @@ node_modules
 public
 migration/vendor
 src/main/common
+prisma/.env

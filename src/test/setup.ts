@@ -3,7 +3,14 @@ import "tsconfig-paths/register";
 //import { ApplicationContext, Env } from "@core/ApplicationContext";
 import { testServer } from "@test/testServer";
 
+const { execSync } = require('child_process')
+
 export default async function () {
+
+  require('dotenv').config({ path: '.env.test' });
+  execSync('npx prisma migrate reset --force')
+  execSync('npx prisma migrate dev')
+
   // // テスト環境に切り替える
   // ApplicationContext.setEnv(Env.test);
   // // コネクションを生成しておく

@@ -2,12 +2,8 @@ import * as path from "path";
 
 const currentDir = `${__dirname}`;
 
-// 実装ソースのディレクトリルート: /api/project/src/main
-const srcRootDir = `${currentDir}/..`;
 // プロジェクトのルート: /api/project
-const projectRootDir = `${srcRootDir}/../..`;
-// APIディレクトリのルート: /api
-const apiRootDir = `${currentDir}`;
+const projectRootDir = `${currentDir}/../../..`;
 
 export enum Env {
   development = "development",
@@ -16,13 +12,11 @@ export enum Env {
 }
 
 interface ApplicationContext {
-  srcRootDir: string;
   projectRootDir: string;
-  apiRootDir: string;
   templateRootDir: string;
+  configFilePath: string;
   env: Env;
   setEnv: (newEnv: string) => void;
-  configFilePath: string;
 }
 
 let env = Env.development;
@@ -44,15 +38,13 @@ const setEnv = (newEnv: string) => {
 };
 
 const ApplicationContext: ApplicationContext = {
-  srcRootDir: path.resolve(srcRootDir),
   projectRootDir: path.resolve(projectRootDir),
-  apiRootDir: path.resolve(apiRootDir),
-  templateRootDir: `${srcRootDir}/templates`,
+  templateRootDir: `${projectRootDir}/src/main/templates`,
   get env() {
     return env;
   },
   get configFilePath() {
-    return `${apiRootDir}/database.yml`;
+    return `${projectRootDir}/src/main/core/database.yml`;
   },
   setEnv,
 };

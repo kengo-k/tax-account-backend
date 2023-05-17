@@ -13,6 +13,7 @@ export enum Env {
 
 interface ApplicationContext {
   projectRootDir: string;
+  dataDir: string;
   templateRootDir: string;
   configFilePath: string;
   env: Env;
@@ -39,6 +40,7 @@ const setEnv = (newEnv: string) => {
 
 const ApplicationContext: ApplicationContext = {
   projectRootDir: path.resolve(projectRootDir),
+  dataDir: `${projectRootDir}/data`,
   templateRootDir: `${projectRootDir}/src/main/templates`,
   get env() {
     return env;

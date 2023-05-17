@@ -1,5 +1,3 @@
-data
-!migration/data
 db.env
 database.yml
 node_modules

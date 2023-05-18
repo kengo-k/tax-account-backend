@@ -4,8 +4,6 @@ import { injectable } from "inversify";
 import { ApplicationContext } from "@core/ApplicationContext";
 import { ConnectionWrapper } from "@core/connection/ConnectionWrapper";
 
-const postgres = require("postgres");
-
 @injectable()
 export class ConnectionProvider {
   private connection: ConnectionWrapper | undefined;
@@ -31,15 +29,8 @@ export class ConnectionProvider {
     const username = dbConfig["common"]["username"];
     const password = dbConfig["common"]["username"];
     const database = dbConfig[env]["database"];
+    const port = dbConfig["common"]["port"];
 
-    const connection = postgres({
-      host,
-      username,
-      password,
-      database,
-      port: 5432,
-    });
-
-    return new ConnectionWrapper(connection);
+    return new ConnectionWrapper(host, username, password, database, port);
   }
 }

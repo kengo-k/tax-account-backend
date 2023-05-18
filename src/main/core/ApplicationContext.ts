@@ -40,13 +40,13 @@ const setEnv = (newEnv: string) => {
 
 const ApplicationContext: ApplicationContext = {
   projectRootDir: path.resolve(projectRootDir),
-  dataDir: `${projectRootDir}/data`,
-  templateRootDir: `${projectRootDir}/src/main/templates`,
+  dataDir: path.resolve(`${projectRootDir}/data`),
+  templateRootDir: path.resolve(`${projectRootDir}/src/main/templates`),
   get env() {
     return env;
   },
   get configFilePath() {
-    return `${projectRootDir}/src/main/core/database.yml`;
+    return path.resolve(`${projectRootDir}/src/main/core/database.yml`);
   },
   setEnv,
 };

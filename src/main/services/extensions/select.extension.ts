@@ -48,7 +48,7 @@ declare module "@services/BaseService" {
      * @param entityType
      * @param entity
      */
-    selectByEntity<ENTITY>(
+    selectByEntity<ENTITY extends {}>(
       entityType: new () => ENTITY,
       entity: EntitySearchCondition<ENTITY>
     ): Promise<{ all_count: number; list: ENTITY[] }>;
@@ -67,7 +67,7 @@ BaseService.prototype.selectByResultRow = async function <RES>(
       res.push(handler(row));
     }
     return res;
-  } catch (e) {
+  } catch (e: any) {
     throw new SQLError(e);
   }
 };
@@ -106,7 +106,7 @@ BaseService.prototype.mapSelect = async function <ROW, RES>(
 BaseService.prototype.selectByEntity = async function <ENTITY extends {}>(
   entityType: new () => ENTITY,
   entity: EntitySearchCondition<ENTITY>
-) {
+): Promise<{all_count: number, list: ENTITY[]}> {
   const dummy = new entityType();
   const names = dummy.constructor.name.split("Entity");
   if (names.length != 2) {
@@ -172,7 +172,7 @@ BaseService.prototype.selectByEntity = async function <ENTITY extends {}>(
     values
   );
   const handler = handlerFactory(entityType);
-  let all_count;
+  let all_count = -1;
   for (const row of result) {
     if (all_count == null) {
       all_count = row.all_count;

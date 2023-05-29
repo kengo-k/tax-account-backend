@@ -4,7 +4,7 @@ import { injectable } from "inversify";
 import { ApplicationContext } from "@core/ApplicationContext";
 import { ConnectionWrapper } from "@core/connection/ConnectionWrapper";
 
-@injectable()
+//@injectable()
 export class ConnectionProvider {
   private connection: ConnectionWrapper | undefined;
 

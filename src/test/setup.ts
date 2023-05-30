@@ -12,6 +12,7 @@ export default async function () {
   require('dotenv').config({ path: '.env.test' });
   execSync('npx prisma migrate reset --force')
   execSync('npx prisma migrate dev')
+  execSync('npm run db:migrate:test')
 
   // テスト環境に切り替える
   ApplicationContext.setEnv(Env.test);

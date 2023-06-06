@@ -5,3 +5,4 @@ public
 migration/vendor
 src/main/common
 prisma/.env*
+.npmrc

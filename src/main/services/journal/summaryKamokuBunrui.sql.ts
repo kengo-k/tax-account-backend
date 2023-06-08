@@ -1,4 +1,4 @@
-import { KamokuBunruiSummaryRequest } from "@common/model/journal/KamokuBunruiSummaryRequest";
+import { KamokuBunruiSummaryRequest } from "@kengo-k/account-common/model/journal/KamokuBunruiSummaryRequest";
 
 export const summaryKamokuBunrui =
   (condition: KamokuBunruiSummaryRequest) => (sql: any) => {

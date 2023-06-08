@@ -1,4 +1,4 @@
-import { LedgerSearchRequest } from "@common/model/journal/LedgerSearchRequest";
+import { LedgerSearchRequest } from "@kengo-k/account-common/model/journal/LedgerSearchRequest";
 
 export const selectLedger = (condition: LedgerSearchRequest) => (sql: any) => {
   return sql`

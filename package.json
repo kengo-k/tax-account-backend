@@ -15,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@kengo-k/account-common": "^1.0.9",
     "dotenv": "^16.0.3",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
@@ -56,7 +57,10 @@
       "js"
     ],
     "transform": {
-      "^.+\\.ts$": ["ts-jest", {}]
+      "^.+\\.ts$": [
+        "ts-jest",
+        {}
+      ]
     },
     "transformIgnorePatterns": [
       "/node_modules/(?!(xxxx.*?\\.js$))"

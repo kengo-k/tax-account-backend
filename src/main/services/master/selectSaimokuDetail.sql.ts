@@ -1,9 +1,8 @@
-import { SaimokuSearchRequest } from "@common/model/master/SaimokuSearchRequest";
+import { SaimokuSearchRequest } from "@kengo-k/account-common/model/master/SaimokuSearchRequest";
 
-export const selectSaimokuDetail = (condition: SaimokuSearchRequest) => (
-  sql: any
-) => {
-  return sql`
+export const selectSaimokuDetail =
+  (condition: SaimokuSearchRequest) => (sql: any) => {
+    return sql`
 select
   k.kamoku_cd,
   s.saimoku_cd,
@@ -17,4 +16,4 @@ from
 where
   saimoku_cd = ${condition.saimoku_cd}
 `;
-};
+  };

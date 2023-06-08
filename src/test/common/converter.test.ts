@@ -1,9 +1,12 @@
 import {
   Converter,
-  ConverterItem,
   ConverterErrorMessage,
-} from "@common/Converter";
-import { EntitySearchCondition, EntitySearchType } from "@common/model/Entity";
+  ConverterItem,
+} from "@kengo-k/account-common/Converter";
+import {
+  EntitySearchCondition,
+  EntitySearchType,
+} from "@kengo-k/account-common/model/Entity";
 
 interface TestType {
   a: number;

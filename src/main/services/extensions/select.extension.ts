@@ -1,11 +1,11 @@
 export {};
-import { BaseService } from "@services/BaseService";
-import { SQLError } from "@common/error/SystemError";
+import { SQLError } from "@kengo-k/account-common/error/SystemError";
 import {
   EntitySearchCondition,
   EntitySearchItem,
   EntitySearchType,
-} from "@common/model/Entity";
+} from "@kengo-k/account-common/model/Entity";
+import { BaseService } from "@services/BaseService";
 const snakecase = require("lodash.snakecase");
 
 declare module "@services/BaseService" {
@@ -106,7 +106,7 @@ BaseService.prototype.mapSelect = async function <ROW, RES>(
 BaseService.prototype.selectByEntity = async function <ENTITY extends {}>(
   entityType: new () => ENTITY,
   entity: EntitySearchCondition<ENTITY>
-): Promise<{all_count: number, list: ENTITY[]}> {
+): Promise<{ all_count: number; list: ENTITY[] }> {
   const dummy = new entityType();
   const names = dummy.constructor.name.split("Entity");
   if (names.length != 2) {

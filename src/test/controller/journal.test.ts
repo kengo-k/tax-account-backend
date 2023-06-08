@@ -1,6 +1,6 @@
-import { testServer } from "@test/testServer";
+import { SaimokuCodeConst as SC } from "@kengo-k/account-common/constant/saimoku";
 import { DefaultNendo, getDefaultDate } from "@test/testConstant";
-import { SaimokuCodeConst as SC } from "@common/constant/saimoku";
+import { testServer } from "@test/testServer";
 
 test("journal/crud", async () => {
   const client = testServer.getClient();

@@ -1,5 +1,5 @@
+import { SaimokuCodeConst as SC } from "@kengo-k/account-common/constant/saimoku";
 import * as moment from "moment";
-import { SaimokuCodeConst as SC } from "@common/constant/saimoku";
 
 const getDate = (baseDate: string) => (add?: number) => {
   if (add == null) {

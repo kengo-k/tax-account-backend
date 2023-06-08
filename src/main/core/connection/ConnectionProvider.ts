@@ -1,10 +1,10 @@
-import * as fs from "fs";
-import * as yaml from "js-yaml";
-import { injectable } from "inversify";
 import { ApplicationContext } from "@core/ApplicationContext";
 import { ConnectionWrapper } from "@core/connection/ConnectionWrapper";
+import * as fs from "fs";
+import { injectable } from "inversify";
+import * as yaml from "js-yaml";
 
-//@injectable()
+@injectable()
 export class ConnectionProvider {
   private connection: ConnectionWrapper | undefined;
 
